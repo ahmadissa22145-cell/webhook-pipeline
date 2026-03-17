@@ -1,12 +1,7 @@
+export class NotFoundError extends Error {
+  public readonly statusCode: number = 404;
 
-
-
-export class NotFoundError extends Error{
-
-    public readonly statusCode: number = 404;
-
-    constructor(message: string){
-
-        super(message);
-    }
+  constructor(message: string) {
+    super(message);
+  }
 }
