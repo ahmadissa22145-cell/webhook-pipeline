@@ -1,6 +1,6 @@
 {
-  "id": "1e6ed207-1693-422a-87d7-461eb84e55cf",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "75f5d5db-5b95-43c0-8adf-86446f6a4836",
+  "prevId": "1e6ed207-1693-422a-87d7-461eb84e55cf",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -73,28 +73,28 @@
         "deliveries_job_id_jobs_id_fk": {
           "name": "deliveries_job_id_jobs_id_fk",
           "tableFrom": "deliveries",
-          "tableTo": "jobs",
           "columnsFrom": [
             "job_id"
           ],
+          "tableTo": "jobs",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "deliveries_subscriber_id_subscribers_id_fk": {
           "name": "deliveries_subscriber_id_subscribers_id_fk",
           "tableFrom": "deliveries",
-          "tableTo": "subscribers",
           "columnsFrom": [
             "subscriber_id"
           ],
+          "tableTo": "subscribers",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -152,15 +152,15 @@
         "events_pipeline_id_pipelines_id_fk": {
           "name": "events_pipeline_id_pipelines_id_fk",
           "tableFrom": "events",
-          "tableTo": "pipelines",
           "columnsFrom": [
             "pipeline_id"
           ],
+          "tableTo": "pipelines",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -219,10 +219,10 @@
       "uniqueConstraints": {
         "pipelines_name_unique": {
           "name": "pipelines_name_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "name"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -273,10 +273,10 @@
       "uniqueConstraints": {
         "subscribers_url_unique": {
           "name": "subscribers_url_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "url"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -319,28 +319,28 @@
         "pipeline_subscribers_pipeline_id_pipelines_id_fk": {
           "name": "pipeline_subscribers_pipeline_id_pipelines_id_fk",
           "tableFrom": "pipeline_subscribers",
-          "tableTo": "pipelines",
           "columnsFrom": [
             "pipeline_id"
           ],
+          "tableTo": "pipelines",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         },
         "pipeline_subscribers_subscriber_id_subscribers_id_fk": {
           "name": "pipeline_subscribers_subscriber_id_subscribers_id_fk",
           "tableFrom": "pipeline_subscribers",
-          "tableTo": "subscribers",
           "columnsFrom": [
             "subscriber_id"
           ],
+          "tableTo": "subscribers",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {
@@ -414,15 +414,15 @@
         "jobs_event_id_events_id_fk": {
           "name": "jobs_event_id_events_id_fk",
           "tableFrom": "jobs",
-          "tableTo": "events",
           "columnsFrom": [
             "event_id"
           ],
+          "tableTo": "events",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -488,32 +488,32 @@
         "sources_pipeline_id_pipelines_id_fk": {
           "name": "sources_pipeline_id_pipelines_id_fk",
           "tableFrom": "sources",
-          "tableTo": "pipelines",
           "columnsFrom": [
             "pipeline_id"
           ],
+          "tableTo": "pipelines",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "sources_token_unique": {
           "name": "sources_token_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "token"
-          ]
+          ],
+          "nullsNotDistinct": false
         },
         "sources_pipeline_id_unique": {
           "name": "sources_pipeline_id_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "pipeline_id"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       },
       "policies": {},
@@ -523,10 +523,10 @@
   },
   "enums": {},
   "schemas": {},
+  "views": {},
   "sequences": {},
   "roles": {},
   "policies": {},
-  "views": {},
   "_meta": {
     "columns": {},
     "schemas": {},
