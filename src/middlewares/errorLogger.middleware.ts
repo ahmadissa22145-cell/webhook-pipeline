@@ -7,15 +7,20 @@ export function errorLoggerMiddleware(
   res: Response,
   next: NextFunction,
 ) {
+  
   if (err instanceof Error) {
-    logger.error(
-      {
-        err,
-        path: req.url,
+    logger.error({
+      message: err.message,
+      stack: err.stack,
+
+      request: {
         method: req.method,
+        url: req.originalUrl,
+        params: req.params,
+        query: req.query,
+        body: req.body,
       },
-      err.message,
-    );
+    });
   }
 
   next(err);
