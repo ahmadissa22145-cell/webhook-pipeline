@@ -10,7 +10,7 @@ import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
 export const sources = pgTable("sources", {
   id: uuid("id").defaultRandom().primaryKey(),
-  url: varchar("url").unique().notNull(),
+  token: varchar("token").unique().notNull(),
   isActive: boolean("is_active").notNull().default(true),
   pipelineId: uuid("pipeline_id")
     .notNull()
