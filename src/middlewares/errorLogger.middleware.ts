@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { logger } from "src/utils/logger.js";
+import { logger } from "../utils/logger.js";
 
 export function errorLoggerMiddleware(
   err: unknown,
