@@ -1,6 +1,6 @@
 import { pgTable, primaryKey, timestamp, uuid } from "drizzle-orm/pg-core";
-import { pipelines } from "./pipelines.table";
-import { subscribers } from "./subscribers.table";
+import { pipelines } from "./pipelines.table.js";
+import { subscribers } from "./subscribers.table.js";
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
 export const pipelineSubscribers = pgTable(

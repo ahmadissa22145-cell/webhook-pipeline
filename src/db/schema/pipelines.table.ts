@@ -16,7 +16,7 @@ export const pipelines = pgTable("pipelines", {
     .notNull()
     .defaultNow()
     .$onUpdate(() => new Date()),
-  deletedAt: timestamp("deleted_at")
+  deletedAt: timestamp("deleted_at"),
 });
 
 export type Pipeline = InferSelectModel<typeof pipelines>;

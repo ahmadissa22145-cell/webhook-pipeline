@@ -1,5 +1,5 @@
 import { jsonb, pgTable, smallint, timestamp, uuid } from "drizzle-orm/pg-core";
-import { pipelines } from "./pipelines.table";
+import { pipelines } from "./pipelines.table.js";
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
 export const events = pgTable("events", {

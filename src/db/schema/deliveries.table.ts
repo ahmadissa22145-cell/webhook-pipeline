@@ -1,6 +1,6 @@
 import { pgTable, smallint, timestamp, uuid } from "drizzle-orm/pg-core";
-import { jobs } from "./jobs.table";
-import { subscribers } from "./subscribers.table";
+import { jobs } from "./jobs.table.js";
+import { subscribers } from "./subscribers.table.js";
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
 export const deliveries = pgTable("deliveries", {

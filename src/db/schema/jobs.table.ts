@@ -1,5 +1,5 @@
 import { pgTable, smallint, timestamp, uuid } from "drizzle-orm/pg-core";
-import { events } from "./events.table";
+import { events } from "./events.table.js";
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
 export const jobs = pgTable("jobs", {

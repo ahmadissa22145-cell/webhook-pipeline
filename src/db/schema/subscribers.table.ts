@@ -9,8 +9,8 @@ export const subscribers = pgTable("subscribers", {
     .notNull()
     .defaultNow()
     .$onUpdate(() => new Date()),
-   
-  deletedAt: timestamp("deleted_at")  
+
+  deletedAt: timestamp("deleted_at"),
 });
 
 export type Subscriber = InferSelectModel<typeof subscribers>;
