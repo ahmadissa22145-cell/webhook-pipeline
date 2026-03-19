@@ -74,12 +74,8 @@
           "name": "deliveries_job_id_jobs_id_fk",
           "tableFrom": "deliveries",
           "tableTo": "jobs",
-          "columnsFrom": [
-            "job_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["job_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -87,12 +83,8 @@
           "name": "deliveries_subscriber_id_subscribers_id_fk",
           "tableFrom": "deliveries",
           "tableTo": "subscribers",
-          "columnsFrom": [
-            "subscriber_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["subscriber_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -153,12 +145,8 @@
           "name": "events_pipeline_id_pipelines_id_fk",
           "tableFrom": "events",
           "tableTo": "pipelines",
-          "columnsFrom": [
-            "pipeline_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["pipeline_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -214,9 +202,7 @@
         "pipelines_name_unique": {
           "name": "pipelines_name_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
+          "columns": ["name"]
         }
       },
       "policies": {},
@@ -262,9 +248,7 @@
         "subscribers_url_unique": {
           "name": "subscribers_url_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "url"
-          ]
+          "columns": ["url"]
         }
       },
       "policies": {},
@@ -308,12 +292,8 @@
           "name": "pipeline_subscribers_pipeline_id_pipelines_id_fk",
           "tableFrom": "pipeline_subscribers",
           "tableTo": "pipelines",
-          "columnsFrom": [
-            "pipeline_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["pipeline_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -321,12 +301,8 @@
           "name": "pipeline_subscribers_subscriber_id_subscribers_id_fk",
           "tableFrom": "pipeline_subscribers",
           "tableTo": "subscribers",
-          "columnsFrom": [
-            "subscriber_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["subscriber_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -334,10 +310,7 @@
       "compositePrimaryKeys": {
         "pipeline_subscribers_pipeline_id_subscriber_id_pk": {
           "name": "pipeline_subscribers_pipeline_id_subscriber_id_pk",
-          "columns": [
-            "pipeline_id",
-            "subscriber_id"
-          ]
+          "columns": ["pipeline_id", "subscriber_id"]
         }
       },
       "uniqueConstraints": {},
@@ -403,12 +376,8 @@
           "name": "jobs_event_id_events_id_fk",
           "tableFrom": "jobs",
           "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -470,12 +439,8 @@
           "name": "sources_pipeline_id_pipelines_id_fk",
           "tableFrom": "sources",
           "tableTo": "pipelines",
-          "columnsFrom": [
-            "pipeline_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["pipeline_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -485,9 +450,7 @@
         "sources_url_unique": {
           "name": "sources_url_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "url"
-          ]
+          "columns": ["url"]
         }
       },
       "policies": {},
