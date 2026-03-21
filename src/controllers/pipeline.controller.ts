@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { NewPipeline } from "../db/schema/index.js";
 import {
   createPipelineService,
+  getAllPipelinesService,
   updatePipelineService,
 } from "../services/pipeline.service.js";
 import { z } from "zod";
@@ -63,6 +64,25 @@ export async function updatePipelineController(
     }
 
     return res.status(200).json({ data: updatedPipeline });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getAllPipelinesController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const storedPipelines = await getAllPipelinesService();
+
+    const message =
+      storedPipelines.length === 0
+        ? "No pipelines found"
+        : "Pipelines retrieved successfully";
+
+    return res.status(200).json({ data: storedPipelines, message: message });
   } catch (error) {
     next(error);
   }
