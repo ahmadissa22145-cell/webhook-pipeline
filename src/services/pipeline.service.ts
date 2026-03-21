@@ -5,7 +5,7 @@ import {
   updatePipeline,
 } from "../repositories/pipeline.repository.js";
 import { NewPipeline } from "../db/schema/index.js";
-import { BadRequestError, InternalServerError } from "../errors/index.js";
+import { BadRequestError } from "../errors/index.js";
 import { ProcessingActionType } from "src/types/processingAction.type.js";
 
 /**
@@ -19,17 +19,7 @@ export async function createPipelineService(input: NewPipeline) {
   if (input.processingActionType === undefined)
     throw new BadRequestError("Processing action type is required");
 
-  try {
-    return await createPipeline(input);
-  } catch (error) {
-    const err = new InternalServerError(
-      `Failed to create pipeline: ${input.name}`,
-    );
-
-    err.cause = error;
-
-    throw err;
-  }
+  return await createPipeline(input);
 }
 
 export async function updatePipelineService(
@@ -37,23 +27,12 @@ export async function updatePipelineService(
   name?: string,
   processingAction?: ProcessingActionType,
 ) {
-  id = id?.trim();
-  name = name?.trim();
+  if (!id?.trim()) throw new BadRequestError("Pipeline id is required");
 
-  if (!id) throw new BadRequestError("Pipeline id is required");
-
-  if (!name && processingAction === undefined)
+  if (!name?.trim() && processingAction === undefined)
     throw new BadRequestError("At least one field is required");
 
-  try {
-    return await updatePipeline(id, name, processingAction);
-  } catch (error) {
-    const err = new InternalServerError(`Failed to update pipeline: ${id}`);
-
-    err.cause = error;
-
-    throw err;
-  }
+  return await updatePipeline(id.trim(), name?.trim(), processingAction);
 }
 
 export async function getAllPipelinesService() {
