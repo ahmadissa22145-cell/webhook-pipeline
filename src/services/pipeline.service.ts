@@ -13,7 +13,10 @@ import { ProcessingActionType } from "src/types/processingAction.type.js";
  * Note: A DB trigger automatically creates a corresponding source after insert.
  */
 export async function createPipelineService(input: NewPipeline) {
-  if (!input.name?.trim())
+
+  input.name = input.name?.trim();
+  
+  if (!input.name)
     throw new BadRequestError("Pipeline name is required");
 
   if (input.processingActionType === undefined)

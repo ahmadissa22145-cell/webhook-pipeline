@@ -27,6 +27,14 @@ export async function createPipelineController(
   try {
     const pipelineData: NewPipeline = createPipelineSchema.parse(req.body);
 
+    pipelineData.name = pipelineData.name?.trim();
+
+    if (!pipelineData.name)
+      throw new BadRequestError("Pipeline name is required");
+
+    if (pipelineData.processingActionType === undefined)
+      throw new BadRequestError("Processing action type is required");
+
     const pipeline = await createPipelineService(pipelineData);
 
     return res.status(201).json({
@@ -53,8 +61,8 @@ export async function updatePipelineController(
       throw new BadRequestError("At least one field is required");
 
     const updatedPipeline = await updatePipelineService(
-      pipelineId,
-      pipelineData.name,
+      pipelineId.trim(),
+      pipelineData.name?.trim(),
       pipelineData.processingActionType,
     );
 
