@@ -49,3 +49,12 @@ export async function getAllPipelines() {
 
   return storedPipelines;
 }
+
+export async function getPipelineById(id: string) {
+  const [storedPipelines] = await db
+    .select()
+    .from(pipelines)
+    .where(eq(pipelines.id, id));
+
+  return storedPipelines ?? null;
+}

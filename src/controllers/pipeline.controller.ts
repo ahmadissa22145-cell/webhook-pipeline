@@ -3,6 +3,7 @@ import { NewPipeline } from "../db/schema/index.js";
 import {
   createPipelineService,
   getAllPipelinesService,
+  getPipelineByIdService,
   updatePipelineService,
 } from "../services/pipeline.service.js";
 import { z } from "zod";
@@ -83,6 +84,27 @@ export async function getAllPipelinesController(
         : "Pipelines retrieved successfully";
 
     return res.status(200).json({ data: storedPipelines, message: message });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getPipelineByIdController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { pipelineId } = req.params as { pipelineId: string };
+
+    if (!pipelineId.trim())
+      throw new BadRequestError("Pipeline id is required");
+
+    const pipeline = await getPipelineByIdService(pipelineId.trim());
+
+    if (!pipeline) return res.status(404).json({ error: "Pipeline not found" });
+
+    return res.status(200).json({ data: pipeline });
   } catch (error) {
     next(error);
   }

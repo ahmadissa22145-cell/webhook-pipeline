@@ -1,6 +1,7 @@
 import {
   createPipeline,
   getAllPipelines,
+  getPipelineById,
   updatePipeline,
 } from "../repositories/pipeline.repository.js";
 import { NewPipeline } from "../db/schema/index.js";
@@ -57,4 +58,10 @@ export async function updatePipelineService(
 
 export async function getAllPipelinesService() {
   return await getAllPipelines();
+}
+
+export async function getPipelineByIdService(id: string) {
+  if (!id?.trim()) throw new BadRequestError("Pipeline id is required");
+
+  return await getPipelineById(id);
 }
