@@ -1,5 +1,6 @@
 import {
   createPipeline,
+  getAllPipelines,
   updatePipeline,
 } from "../repositories/pipeline.repository.js";
 import { NewPipeline } from "../db/schema/index.js";
@@ -18,9 +19,7 @@ export async function createPipelineService(input: NewPipeline) {
     throw new BadRequestError("Processing action type is required");
 
   try {
-    const createdPipeline = await createPipeline(input);
-
-    return createdPipeline;
+    return await createPipeline(input);
   } catch (error) {
     const err = new InternalServerError(
       `Failed to create pipeline: ${input.name}`,
@@ -54,4 +53,8 @@ export async function updatePipelineService(
 
     throw err;
   }
+}
+
+export async function getAllPipelinesService() {
+  return await getAllPipelines();
 }

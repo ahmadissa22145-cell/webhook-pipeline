@@ -43,3 +43,9 @@ export async function updatePipeline(
 
   return updatedPipelines ?? null;
 }
+
+export async function getAllPipelines() {
+  const storedPipelines = await db.select().from(pipelines);
+
+  return storedPipelines;
+}
