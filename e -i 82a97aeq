@@ -1,0 +1,113 @@
+[33mcommit 58220fd1458aee71e1a92e2c0bf68ea5a50aef6c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: ahmadissa22145-cell <ahmadissa22145@gmail.com>
+Date:   Thu Mar 19 21:54:15 2026 +0200
+
+    refactor(db): rename url to token in sources table and add deletedAt field for soft delete support
+
+[33mcommit 660b188d165f163551ca6b388d7f04b9377ecd78[m
+Author: ahmadissa22145-cell <ahmadissa22145@gmail.com>
+Date:   Thu Mar 19 21:52:00 2026 +0200
+
+    feat(db): add deletedAt column to pipelines table to enable soft deletes
+
+[33mcommit 297cb6dd979e0fe7f25ca582065bc33a3fe3d2cf[m
+Author: ahmadissa22145-cell <ahmadissa22145@gmail.com>
+Date:   Thu Mar 19 21:42:39 2026 +0200
+
+    chore(db): remove obsolete initial migration file
+
+[33mcommit b1d17bc54421814af6e45cccb82029b4a90891c0[m
+Author: ahmadissa22145-cell <ahmadissa22145@gmail.com>
+Date:   Thu Mar 19 21:41:25 2026 +0200
+
+    refactor(logging): add structured error logging with request details
+
+[33mcommit 82a97ae4893d24dadb035a07da95155372d87415[m
+Author: ahmadissa22145-cell <ahmadissa22145@gmail.com>
+Date:   Thu Mar 19 21:39:19 2026 +0200
+
+    feat(db): add AFTER INSERT trigger on pipelines to automatically create source
+
+[33mcommit 3864123e737a2be01a78e59d8aef555beb1dc675[m
+Author: ahmadissa22145-cell <ahmadissa22145@gmail.com>
+Date:   Thu Mar 19 21:37:16 2026 +0200
+
+    refactor(db): add soft delete, rename sources.url to token, and convert token to UUID
+
+[33mcommit 8b1d6c445912dd2038c8d8f4f75e45141d22af7e[m
+Author: ahmadissa22145-cell <ahmadissa22145@gmail.com>
+Date:   Thu Mar 19 11:26:26 2026 +0200
+
+    refactor: changed url to token
+
+[33mcommit 882a11022c32a2e7a6f031faf2e8c3fc4ba20bba[m
+Author: ahmadissa22145-cell <ahmadissa22145@gmail.com>
+Date:   Thu Mar 19 10:35:06 2026 +0200
+
+    fix(middleware): resolve errorLogger import issue by adding .js extension
+
+[33mcommit 570bfe546e2ff322219afeab499a90231e730493[m
+Author: ahmadissa22145-cell <ahmadissa22145@gmail.com>
+Date:   Thu Mar 19 10:33:45 2026 +0200
+
+    chore: update drizzle config, eslint setup, tsconfig, and dependencies
+
+[33mcommit ad16d5c179278a318bd537280cc8c5664047f96d[m
+Author: ahmadissa22145-cell <ahmadissa22145@gmail.com>
+Date:   Thu Mar 19 10:31:05 2026 +0200
+
+    chore: update .gitignore to ignore logs directory
+
+[33mcommit 1cdbc41f7f280f5fc231a87bb02d909b0f7d3d4d[m
+Author: ahmadissa22145-cell <ahmadissa22145@gmail.com>
+Date:   Thu Mar 19 10:26:49 2026 +0200
+
+    fix: resolve runtime issue by correcting file extension to .js
+
+[33mcommit 67eab5190dc384480af468d8125266bb1c25d96c[m
+Author: ahmadissa22145-cell <ahmadissa22145@gmail.com>
+Date:   Thu Mar 19 10:25:19 2026 +0200
+
+    refactor: rename custom errors to errors
+
+[33mcommit 2f294af1cd53f0bd971ae59d50428f3e9eab5eea[m
+Author: ahmadissa22145-cell <ahmadissa22145@gmail.com>
+Date:   Thu Mar 19 10:02:01 2026 +0200
+
+    refactor: add soft delete support to core entities (pipeline, source, subscriber)
+
+[33mcommit a9a8fec71ca30c5f871b19c3da62eeb522bd14c4[m
+Author: ahmadissa22145-cell <ahmadissa22145@gmail.com>
+Date:   Wed Mar 18 13:48:30 2026 +0200
+
+    feat: add centralized error handling middleware with logger
+
+[33mcommit a4038e63116e92c1745828c06afba7b1b241cff3[m
+Author: ahmadissa22145-cell <ahmadissa22145@gmail.com>
+Date:   Wed Mar 18 12:33:49 2026 +0200
+
+    feat: add logger using pino for error handling
+
+[33mcommit 24ada12a7762ae2f07a1df83460d74289710b228[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: ahmadissa22145-cell <ahmadissa22145@gmail.com>
+Date:   Tue Mar 17 12:57:15 2026 +0200
+
+    style(errors): improve formatting and code consistency
+
+[33mcommit 698b7e46a830a99f06db52486985b0dedf508185[m
+Author: ahmadissa22145-cell <ahmadissa22145@gmail.com>
+Date:   Tue Mar 17 12:53:22 2026 +0200
+
+    feat(errors): add custom error classes
+
+[33mcommit fb837922046627dc00bccc3ad3407034215d7981[m
+Author: ahmadissa22145-cell <ahmadissa22145@gmail.com>
+Date:   Mon Mar 16 13:15:14 2026 +0200
+
+    feat(db): add initial database schema, and enums
+
+[33mcommit 7092f527c865036c5653c17541429fdc9cd8c47f[m
+Author: ahmadissa22145-cell <ahmadissa22145@gmail.com>
+Date:   Sun Mar 15 14:01:06 2026 +0200
+
+    initial project setup
