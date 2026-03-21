@@ -3,6 +3,7 @@ import {
   createPipelineController,
   getAllPipelinesController,
   getPipelineByIdController,
+  getPipelineByNameController,
   updatePipelineController,
 } from "../controllers/pipeline.controller.js";
 
@@ -14,4 +15,9 @@ pipelineRoutes.patch("/pipelines/:pipelineId", updatePipelineController);
 
 pipelineRoutes.get("/pipelines", getAllPipelinesController);
 
-pipelineRoutes.get("/pipelines/:pipelineId", getPipelineByIdController);
+pipelineRoutes.get("/pipelines/id/:pipelineId", getPipelineByIdController);
+
+pipelineRoutes.get(
+  "/pipelines/name/:pipelineName",
+  getPipelineByNameController,
+);

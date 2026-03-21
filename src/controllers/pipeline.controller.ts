@@ -4,6 +4,7 @@ import {
   createPipelineService,
   getAllPipelinesService,
   getPipelineByIdService,
+  getPipelineByNameService,
   updatePipelineService,
 } from "../services/pipeline.service.js";
 import { z } from "zod";
@@ -109,6 +110,27 @@ export async function getPipelineByIdController(
       throw new BadRequestError("Pipeline id is required");
 
     const pipeline = await getPipelineByIdService(pipelineId.trim());
+
+    if (!pipeline) return res.status(404).json({ error: "Pipeline not found" });
+
+    return res.status(200).json({ data: pipeline });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getPipelineByNameController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { pipelineName } = req.params as { pipelineName: string };
+
+    if (!pipelineName.trim())
+      throw new BadRequestError("Pipeline name is required");
+
+    const pipeline = await getPipelineByNameService(pipelineName.trim());
 
     if (!pipeline) return res.status(404).json({ error: "Pipeline not found" });
 
