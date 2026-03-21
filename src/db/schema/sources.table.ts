@@ -3,14 +3,13 @@ import {
   pgTable,
   timestamp,
   uuid,
-  varchar,
 } from "drizzle-orm/pg-core";
 import { pipelines } from "./pipelines.table.js";
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
 export const sources = pgTable("sources", {
   id: uuid("id").defaultRandom().primaryKey(),
-  token: varchar("token").unique().notNull(),
+  token: uuid("token").unique().notNull().defaultRandom(),
   isActive: boolean("is_active").notNull().default(true),
   pipelineId: uuid("pipeline_id")
     .notNull()
