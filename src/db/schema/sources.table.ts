@@ -1,9 +1,4 @@
-import {
-  boolean,
-  pgTable,
-  timestamp,
-  uuid,
-} from "drizzle-orm/pg-core";
+import { boolean, pgTable, timestamp, uuid } from "drizzle-orm/pg-core";
 import { pipelines } from "./pipelines.table.js";
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 

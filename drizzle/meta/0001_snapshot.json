@@ -73,26 +73,18 @@
         "deliveries_job_id_jobs_id_fk": {
           "name": "deliveries_job_id_jobs_id_fk",
           "tableFrom": "deliveries",
-          "columnsFrom": [
-            "job_id"
-          ],
+          "columnsFrom": ["job_id"],
           "tableTo": "jobs",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         },
         "deliveries_subscriber_id_subscribers_id_fk": {
           "name": "deliveries_subscriber_id_subscribers_id_fk",
           "tableFrom": "deliveries",
-          "columnsFrom": [
-            "subscriber_id"
-          ],
+          "columnsFrom": ["subscriber_id"],
           "tableTo": "subscribers",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         }
@@ -152,13 +144,9 @@
         "events_pipeline_id_pipelines_id_fk": {
           "name": "events_pipeline_id_pipelines_id_fk",
           "tableFrom": "events",
-          "columnsFrom": [
-            "pipeline_id"
-          ],
+          "columnsFrom": ["pipeline_id"],
           "tableTo": "pipelines",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         }
@@ -219,9 +207,7 @@
       "uniqueConstraints": {
         "pipelines_name_unique": {
           "name": "pipelines_name_unique",
-          "columns": [
-            "name"
-          ],
+          "columns": ["name"],
           "nullsNotDistinct": false
         }
       },
@@ -273,9 +259,7 @@
       "uniqueConstraints": {
         "subscribers_url_unique": {
           "name": "subscribers_url_unique",
-          "columns": [
-            "url"
-          ],
+          "columns": ["url"],
           "nullsNotDistinct": false
         }
       },
@@ -319,26 +303,18 @@
         "pipeline_subscribers_pipeline_id_pipelines_id_fk": {
           "name": "pipeline_subscribers_pipeline_id_pipelines_id_fk",
           "tableFrom": "pipeline_subscribers",
-          "columnsFrom": [
-            "pipeline_id"
-          ],
+          "columnsFrom": ["pipeline_id"],
           "tableTo": "pipelines",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         },
         "pipeline_subscribers_subscriber_id_subscribers_id_fk": {
           "name": "pipeline_subscribers_subscriber_id_subscribers_id_fk",
           "tableFrom": "pipeline_subscribers",
-          "columnsFrom": [
-            "subscriber_id"
-          ],
+          "columnsFrom": ["subscriber_id"],
           "tableTo": "subscribers",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         }
@@ -346,10 +322,7 @@
       "compositePrimaryKeys": {
         "pipeline_subscribers_pipeline_id_subscriber_id_pk": {
           "name": "pipeline_subscribers_pipeline_id_subscriber_id_pk",
-          "columns": [
-            "pipeline_id",
-            "subscriber_id"
-          ]
+          "columns": ["pipeline_id", "subscriber_id"]
         }
       },
       "uniqueConstraints": {},
@@ -414,13 +387,9 @@
         "jobs_event_id_events_id_fk": {
           "name": "jobs_event_id_events_id_fk",
           "tableFrom": "jobs",
-          "columnsFrom": [
-            "event_id"
-          ],
+          "columnsFrom": ["event_id"],
           "tableTo": "events",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         }
@@ -488,13 +457,9 @@
         "sources_pipeline_id_pipelines_id_fk": {
           "name": "sources_pipeline_id_pipelines_id_fk",
           "tableFrom": "sources",
-          "columnsFrom": [
-            "pipeline_id"
-          ],
+          "columnsFrom": ["pipeline_id"],
           "tableTo": "pipelines",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         }
@@ -503,16 +468,12 @@
       "uniqueConstraints": {
         "sources_token_unique": {
           "name": "sources_token_unique",
-          "columns": [
-            "token"
-          ],
+          "columns": ["token"],
           "nullsNotDistinct": false
         },
         "sources_pipeline_id_unique": {
           "name": "sources_pipeline_id_unique",
-          "columns": [
-            "pipeline_id"
-          ],
+          "columns": ["pipeline_id"],
           "nullsNotDistinct": false
         }
       },

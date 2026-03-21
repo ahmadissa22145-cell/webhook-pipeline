@@ -7,7 +7,6 @@ export function errorLoggerMiddleware(
   res: Response,
   next: NextFunction,
 ) {
-  
   if (err instanceof Error) {
     logger.error({
       message: err.message,
