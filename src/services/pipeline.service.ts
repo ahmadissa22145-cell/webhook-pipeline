@@ -2,7 +2,7 @@ import {
   createPipeline,
   updatePipeline,
 } from "../repositories/pipeline.repository.js";
-import { NewPipeline, Pipeline } from "../db/schema/index.js";
+import { NewPipeline } from "../db/schema/index.js";
 import { BadRequestError, InternalServerError } from "../errors/index.js";
 import { ProcessingActionType } from "src/types/processingAction.type.js";
 
