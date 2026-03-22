@@ -6,14 +6,21 @@
       "idx": 0,
       "version": "7",
       "when": 1773944348821,
-      "tag": "0000_peaceful_spectrum",
+      "tag": "0000_init_schema",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
       "when": 1773944431822,
-      "tag": "0001_striped_marten_broadcloak",
+      "tag": "0001_pipeline_create_source_trigger",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1774178529745,
+      "tag": "0002_pipeline_soft_delete_trigger",
       "breakpoints": true
     }
   ]
