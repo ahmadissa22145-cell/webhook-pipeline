@@ -1,4 +1,4 @@
-import { ProcessingActionType } from "src/types/processingAction.type.js";
+import { ProcessingActionType } from "src/types/processingAction.type";
 import { db } from "../db/index.js";
 import { NewPipeline, Pipeline, pipelines } from "../db/schema/index.js";
 import { eq } from "drizzle-orm";
