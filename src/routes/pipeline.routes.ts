@@ -12,7 +12,7 @@ import {
 
 export const pipelineRoutes = Router();
 
-// ========== CREATE ==========
+// ========== CREATE ===========
 pipelineRoutes.post("/pipelines", createPipelineController);
 
 // ========== UPDATE ==========
@@ -38,7 +38,4 @@ pipelineRoutes.get(
 // ========== DELETE ==========
 pipelineRoutes.delete("/pipelines/:id", deletePipelineController);
 
-pipelineRoutes.delete(
-  "/pipelines/by-name/:name",
-  deletePipelineController,
-);
+pipelineRoutes.delete("/pipelines/by-name/:name", deletePipelineController);
