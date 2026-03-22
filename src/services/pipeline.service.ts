@@ -30,6 +30,14 @@ export async function createPipelineService(input: NewPipeline) {
   if (input.processingActionType === undefined)
     throw new BadRequestError("Processing action type is required");
 
+  const existing = await getPipelineByName(input.name);
+
+  if (existing) {
+    throw new ConflictError(
+      `Pipeline with name '${input.name}' already exists`,
+    );
+  }
+
   return await createPipeline(input);
 }
 
@@ -44,6 +52,14 @@ export async function updatePipelineService(
 
   if (!name?.trim() && processingAction === undefined)
     throw new BadRequestError("At least one field is required");
+
+  if (name) {
+    const existing = await getPipelineByName(name);
+
+    if (existing?.id !== id) {
+      throw new ConflictError(`Pipeline with name '${name}' already exists`);
+    }
+  }
 
   return await updatePipeline(trimmedId, name?.trim(), processingAction);
 }
