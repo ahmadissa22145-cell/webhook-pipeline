@@ -57,16 +57,14 @@ export async function updatePipelineController(
   next: NextFunction,
 ) {
   try {
-    const { pipelineId } = req.params as { pipelineId: string };
+    const { id } = req.params as { id: string };
     const pipelineData = updatePipelineSchema.parse(req.body);
-
-    const trimmedPipelineId = trimOrThrow(pipelineId, "Pipeline id");
 
     if (!pipelineData.name && pipelineData.processingActionType === undefined)
       throw new BadRequestError("At least one field is required");
 
     const updatedPipeline = await updatePipelineService(
-      trimmedPipelineId,
+      trimOrThrow(id, "Pipeline id"),
       pipelineData.name?.trim(),
       pipelineData.processingActionType,
     );
@@ -149,10 +147,10 @@ export async function isPipelineDeletedController(
   next: NextFunction,
 ) {
   try {
-    const { pipelineId } = req.params as { pipelineId: string };
+    const { id } = req.params as { id: string };
 
     const isDeleted = await isPipelineDeletedService(
-      trimOrThrow(pipelineId, "Pipeline id"),
+      trimOrThrow(id, "Pipeline id"),
     );
 
     return res.status(200).json({ isDeleted: isDeleted });
@@ -167,10 +165,10 @@ export async function isPipelineDeletedByNameController(
   next: NextFunction,
 ) {
   try {
-    const { pipelineName } = req.params as { pipelineName: string };
+    const { name } = req.params as { name: string };
 
     const isDeleted = await isPipelineDeletedByNameService(
-      trimOrThrow(pipelineName, "Pipeline name"),
+      trimOrThrow(name, "Pipeline name"),
     );
 
     return res.status(200).json({ isDeleted: isDeleted });
@@ -186,13 +184,13 @@ export async function deletePipelineController(
   next: NextFunction,
 ) {
   try {
-    const { pipelineId, pipelineName } = req.params as {
-      pipelineId: string;
-      pipelineName: string;
+    const { id, name } = req.params as {
+      id: string;
+      name: string;
     };
 
-    const field = pipelineId ? "id" : "name";
-    const value = pipelineId ?? pipelineName;
+    const field = id ? "id" : "name";
+    const value = id ?? name;
 
     const trimmedValue = trimOrThrow(value, field);
 
