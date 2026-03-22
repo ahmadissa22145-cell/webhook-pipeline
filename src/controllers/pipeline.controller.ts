@@ -109,10 +109,10 @@ export async function getPipelineByIdController(
   next: NextFunction,
 ) {
   try {
-    const { pipelineId } = req.params as { pipelineId: string };
+    const { id } = req.params as { id: string };
 
     const pipeline = await getPipelineByIdService(
-      trimOrThrow(pipelineId, "Pipeline id"),
+      trimOrThrow(id, "Pipeline id")
     );
 
     if (!pipeline) return res.status(404).json({ error: "Pipeline not found" });
@@ -129,10 +129,10 @@ export async function getPipelineByNameController(
   next: NextFunction,
 ) {
   try {
-    const { pipelineName } = req.params as { pipelineName: string };
+    const { name } = req.params as { name: string };
 
     const pipeline = await getPipelineByNameService(
-      trimOrThrow(pipelineName, "Pipeline name"),
+      trimOrThrow(name, "Pipeline name"),
     );
 
     if (!pipeline) return res.status(404).json({ error: "Pipeline not found" });
