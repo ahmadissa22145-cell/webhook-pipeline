@@ -53,7 +53,7 @@ export async function updatePipeline(
   return updatedPipelines ?? null;
 }
 
-// ================== READ ==================
+// ================== READ ===================
 
 export async function getAllPipelines() {
   const storedPipelines = await db

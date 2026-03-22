@@ -112,7 +112,7 @@ export async function getPipelineByIdController(
     const { id } = req.params as { id: string };
 
     const pipeline = await getPipelineByIdService(
-      trimOrThrow(id, "Pipeline id")
+      trimOrThrow(id, "Pipeline id"),
     );
 
     if (!pipeline) return res.status(404).json({ error: "Pipeline not found" });
