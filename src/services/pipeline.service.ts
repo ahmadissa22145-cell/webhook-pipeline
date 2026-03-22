@@ -16,6 +16,7 @@ import {
   NotFoundError,
 } from "../errors/index.js";
 import { ProcessingActionType } from "../types/processingAction.type.js";
+import { trimOrThrow } from "../utils/validation.js";
 
 // ================== CREATE ==================
 
@@ -24,9 +25,7 @@ import { ProcessingActionType } from "../types/processingAction.type.js";
  * Note: A DB trigger automatically creates a corresponding source after insert.
  */
 export async function createPipelineService(input: NewPipeline) {
-  input.name = input.name?.trim();
-
-  if (!input.name) throw new BadRequestError("Pipeline name is required");
+  input.name = trimOrThrow(input.name, "Pipeline name");
 
   if (input.processingActionType === undefined)
     throw new BadRequestError("Processing action type is required");
@@ -41,42 +40,34 @@ export async function updatePipelineService(
   name?: string,
   processingAction?: ProcessingActionType,
 ) {
-  if (!id?.trim()) throw new BadRequestError("Pipeline id is required");
+  const trimmedId = trimOrThrow(id, "Pipeline id");
 
   if (!name?.trim() && processingAction === undefined)
     throw new BadRequestError("At least one field is required");
 
-  return await updatePipeline(id.trim(), name?.trim(), processingAction);
+  return await updatePipeline(trimmedId, name?.trim(), processingAction);
 }
+
+// ================== READ ==================
 
 export async function getAllPipelinesService() {
   return await getAllPipelines();
 }
 
-// ================== READ ==================
-
 export async function getPipelineByIdService(id: string) {
-  if (!id?.trim()) throw new BadRequestError("Pipeline id is required");
-
-  return await getPipelineById(id.trim());
+  return await getPipelineById(trimOrThrow(id, "Pipeline id"));
 }
 
 export async function getPipelineByNameService(name: string) {
-  if (!name?.trim()) throw new BadRequestError("Pipeline name is required");
-
-  return await getPipelineByName(name.trim());
+  return await getPipelineByName(trimOrThrow(name, "Pipeline name"));
 }
 
 export async function isPipelineDeletedService(id: string) {
-  if (!id?.trim()) throw new BadRequestError("Pipeline id is required");
-
-  return await isPipelineDeleted(id.trim());
+  return await isPipelineDeleted(trimOrThrow(id, "Pipeline id"));
 }
 
 export async function isPipelineDeletedByNameService(name: string) {
-  if (!name?.trim()) throw new BadRequestError("Pipeline name is required");
-
-  return await isPipelineDeletedByName(name.trim());
+  return await isPipelineDeletedByName(trimOrThrow(name, "Pipeline name"));
 }
 
 // ================== DELETE ==================
@@ -87,9 +78,7 @@ export async function deletePipelineService(
   fnGetPipeline: (param: string) => Promise<Pipeline | null>,
   fnDeletePipeline: (paarm: string) => Promise<boolean>,
 ) {
-  const trimmedValue = value?.trim();
-
-  if (!trimmedValue) throw new BadRequestError(`Pipeline ${field} is required`);
+  const trimmedValue = trimOrThrow(value, field);
 
   const pipeline = await fnGetPipeline(trimmedValue);
 
