@@ -1,12 +1,14 @@
 import { ProcessingActionType } from "src/types/processingAction.type";
 import { db } from "../db/index.js";
 import { NewPipeline, Pipeline, pipelines } from "../db/schema/index.js";
-import { and, eq, isNotNull } from "drizzle-orm";
+import { and, eq, isNotNull, isNull } from "drizzle-orm";
 
 type UpdatePipelineInput = {
   name?: string;
   processingActionType?: ProcessingActionType;
 };
+
+// ================== CREATE ==================
 
 export async function createPipeline(input: NewPipeline): Promise<Pipeline> {
   const [pipeline] = await db
@@ -19,6 +21,8 @@ export async function createPipeline(input: NewPipeline): Promise<Pipeline> {
 
   return pipeline;
 }
+
+// ================== UPDATE ==================
 
 export async function updatePipeline(
   id: string,
@@ -43,6 +47,8 @@ export async function updatePipeline(
 
   return updatedPipelines ?? null;
 }
+
+// ================== READ ==================
 
 export async function getAllPipelines() {
   const storedPipelines = await db.select().from(pipelines);
@@ -84,4 +90,22 @@ export async function isPipelineDeletedByName(name: string) {
     .where(and(eq(pipelines.name, name), isNotNull(pipelines.deletedAt)));
 
   return existing.length > 0;
+}
+
+// ================== DELETE ==================
+
+export async function deletePipeline(id: string) {
+  await db
+    .delete(pipelines)
+    .where(and(eq(pipelines.id, id), isNull(pipelines.deletedAt)));
+
+  return true;
+}
+
+export async function deletePipelineByName(name: string) {
+  await db
+    .delete(pipelines)
+    .where(and(eq(pipelines.name, name), isNull(pipelines.deletedAt)));
+
+  return true;
 }

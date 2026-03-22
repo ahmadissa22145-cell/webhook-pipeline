@@ -1,5 +1,7 @@
 import {
   createPipeline,
+  deletePipeline,
+  deletePipelineByName,
   getAllPipelines,
   getPipelineById,
   getPipelineByName,
@@ -7,9 +9,15 @@ import {
   isPipelineDeletedByName,
   updatePipeline,
 } from "../repositories/pipeline.repository.js";
-import { NewPipeline } from "../db/schema/index.js";
-import { BadRequestError } from "../errors/index.js";
-import { ProcessingActionType } from "src/types/processingAction.type.js";
+import { NewPipeline, Pipeline } from "../db/schema/index.js";
+import {
+  BadRequestError,
+  ConflictError,
+  NotFoundError,
+} from "../errors/index.js";
+import { ProcessingActionType } from "../types/processingAction.type.js";
+
+// ================== CREATE ==================
 
 /**
  * Creates a pipeline
@@ -25,6 +33,8 @@ export async function createPipelineService(input: NewPipeline) {
 
   return await createPipeline(input);
 }
+
+// ================== UPDATE ==================
 
 export async function updatePipelineService(
   id: string,
@@ -42,6 +52,8 @@ export async function updatePipelineService(
 export async function getAllPipelinesService() {
   return await getAllPipelines();
 }
+
+// ================== READ ==================
 
 export async function getPipelineByIdService(id: string) {
   if (!id?.trim()) throw new BadRequestError("Pipeline id is required");
@@ -65,4 +77,38 @@ export async function isPipelineDeletedByNameService(name: string) {
   if (!name?.trim()) throw new BadRequestError("Pipeline name is required");
 
   return await isPipelineDeletedByName(name.trim());
+}
+
+// ================== DELETE ==================
+
+export async function deletePipelineService(
+  value: string,
+  field: "id" | "name",
+  fnGetPipeline: (param: string) => Promise<Pipeline | null>,
+  fnDeletePipeline: (paarm: string) => Promise<boolean>,
+) {
+  const trimmedValue = value?.trim();
+
+  if (!trimmedValue) throw new BadRequestError(`Pipeline ${field} is required`);
+
+  const pipeline = await fnGetPipeline(trimmedValue);
+
+  checkPipelineIsValidToDelete(pipeline);
+
+  return await fnDeletePipeline(trimmedValue);
+}
+
+export async function deletePipelineByIdService(id: string) {
+  return await deletePipeline(id);
+}
+
+export async function deletePipelineByNameService(name: string) {
+  return await deletePipelineByName(name);
+}
+
+function checkPipelineIsValidToDelete(pipeline: Pipeline | null) {
+  if (!pipeline) throw new NotFoundError(`Pipeline not found`);
+
+  if (pipeline.deletedAt)
+    throw new ConflictError(`Pipeline is already deleted`);
 }

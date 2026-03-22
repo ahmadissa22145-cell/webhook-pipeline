@@ -2,6 +2,9 @@ import { Request, Response, NextFunction } from "express";
 import { NewPipeline } from "../db/schema/index.js";
 import {
   createPipelineService,
+  deletePipelineByIdService,
+  deletePipelineByNameService,
+  deletePipelineService,
   getAllPipelinesService,
   getPipelineByIdService,
   getPipelineByNameService,
@@ -22,6 +25,7 @@ const updatePipelineSchema = z.object({
   processingActionType: z.number().optional(),
 });
 
+// ================== CREATE ==================
 export async function createPipelineController(
   req: Request,
   res: Response,
@@ -48,6 +52,7 @@ export async function createPipelineController(
   }
 }
 
+// ================== UPDATE ==================
 export async function updatePipelineController(
   req: Request,
   res: Response,
@@ -81,6 +86,7 @@ export async function updatePipelineController(
   }
 }
 
+// ================== READ ==================
 export async function getAllPipelinesController(
   req: Request,
   res: Response,
@@ -178,4 +184,52 @@ export async function isPipelineDeletedByNameController(
   } catch (error) {
     next(error);
   }
+}
+
+// ================== DELETE ==================
+export async function deletePipelineController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { pipelineId, pipelineName } = req.params as {
+      pipelineId: string;
+      pipelineName: string;
+    };
+
+    const field = pipelineId ? "id" : "name";
+    const value = pipelineId ?? pipelineName;
+
+    const trimmedValue = value?.trim();
+
+    if (!trimmedValue)
+      throw new BadRequestError(`Pipeline ${field} is required`);
+
+    const pipelineHandlers = buildPipelineHandlers(field);
+
+    await deletePipelineService(
+      trimmedValue,
+      field,
+      pipelineHandlers.fnGetPipeline,
+      pipelineHandlers.fnDeletePipeline,
+    );
+
+    return res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+}
+
+function buildPipelineHandlers(field: "id" | "name") {
+  const fnGetPipeline =
+    field === "id" ? getPipelineByIdService : getPipelineByNameService;
+
+  const fnDeletePipeline =
+    field === "id" ? deletePipelineByIdService : deletePipelineByNameService;
+
+  return {
+    fnGetPipeline,
+    fnDeletePipeline,
+  };
 }
