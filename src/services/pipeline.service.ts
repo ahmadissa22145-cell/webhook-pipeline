@@ -3,6 +3,8 @@ import {
   getAllPipelines,
   getPipelineById,
   getPipelineByName,
+  isPipelineDeleted,
+  isPipelineDeletedByName,
   updatePipeline,
 } from "../repositories/pipeline.repository.js";
 import { NewPipeline } from "../db/schema/index.js";
@@ -51,4 +53,16 @@ export async function getPipelineByNameService(name: string) {
   if (!name?.trim()) throw new BadRequestError("Pipeline name is required");
 
   return await getPipelineByName(name.trim());
+}
+
+export async function isPipelineDeletedService(id: string) {
+  if (!id?.trim()) throw new BadRequestError("Pipeline id is required");
+
+  return await isPipelineDeleted(id.trim());
+}
+
+export async function isPipelineDeletedByNameService(name: string) {
+  if (!name?.trim()) throw new BadRequestError("Pipeline name is required");
+
+  return await isPipelineDeletedByName(name.trim());
 }

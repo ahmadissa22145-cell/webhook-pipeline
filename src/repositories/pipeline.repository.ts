@@ -1,7 +1,7 @@
 import { ProcessingActionType } from "src/types/processingAction.type";
 import { db } from "../db/index.js";
 import { NewPipeline, Pipeline, pipelines } from "../db/schema/index.js";
-import { eq } from "drizzle-orm";
+import { and, eq, isNotNull } from "drizzle-orm";
 
 type UpdatePipelineInput = {
   name?: string;
@@ -66,4 +66,22 @@ export async function getPipelineByName(name: string) {
     .where(eq(pipelines.name, name));
 
   return storedPipelines ?? null;
+}
+
+export async function isPipelineDeleted(id: string) {
+  const existing = await db
+    .select({ id: pipelines.id })
+    .from(pipelines)
+    .where(and(eq(pipelines.id, id), isNotNull(pipelines.deletedAt)));
+
+  return existing.length > 0;
+}
+
+export async function isPipelineDeletedByName(name: string) {
+  const existing = await db
+    .select({ id: pipelines.id })
+    .from(pipelines)
+    .where(and(eq(pipelines.name, name), isNotNull(pipelines.deletedAt)));
+
+  return existing.length > 0;
 }
