@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createPipelineController,
+  deletePipelineController,
   getAllPipelinesController,
   getPipelineByIdController,
   getPipelineByNameController,
@@ -32,4 +33,11 @@ pipelineRoutes.get(
 pipelineRoutes.get(
   "/pipelines/by-name/:pipelineName/is-deleted",
   isPipelineDeletedByNameController,
+);
+
+pipelineRoutes.delete("/pipelines/:pipelineId", deletePipelineController);
+
+pipelineRoutes.delete(
+  "/pipelines/by-name/:pipelineName",
+  deletePipelineController,
 );
