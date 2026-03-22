@@ -9,7 +9,7 @@
   "scripts": {
     "build": "npx tsc",
     "start": "node dist/main.js",
-    "dev": "npx tsc && node dist/main.js",
+    "dev": "prettier --write . && eslint . --fix && tsc && node dist/main.js",
     "generate": "drizzle-kit generate",
     "migrate": "drizzle-kit migrate",
     "push": "drizzle-kit push",
