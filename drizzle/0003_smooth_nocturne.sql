@@ -1,0 +1,2 @@
+ALTER TABLE "pipelines" DROP CONSTRAINT "pipelines_name_unique";--> statement-breakpoint
+CREATE UNIQUE INDEX "unique_pipeline_name_active" ON "pipelines" USING btree ("name") WHERE "pipelines"."deleted_at" is null;

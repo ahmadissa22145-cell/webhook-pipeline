@@ -1,6 +1,6 @@
 {
-  "id": "6c9864c8-4495-4bcf-a390-535e76d45631",
-  "prevId": "35fc3062-68f2-4558-b44e-64e32e7f8be8",
+  "id": "7b5cb43e-d6dc-46e1-8478-06a511f99ed2",
+  "prevId": "6c9864c8-4495-4bcf-a390-535e76d45631",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -201,16 +201,27 @@
           "notNull": false
         }
       },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "pipelines_name_unique": {
-          "name": "pipelines_name_unique",
-          "nullsNotDistinct": false,
-          "columns": ["name"]
+      "indexes": {
+        "unique_pipeline_name_active": {
+          "name": "unique_pipeline_name_active",
+          "columns": [
+            {
+              "expression": "name",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"pipelines\".\"deleted_at\" is null",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
