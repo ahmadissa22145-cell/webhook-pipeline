@@ -14,6 +14,7 @@ import {
 } from "../services/pipeline.service.js";
 import { z } from "zod";
 import { BadRequestError } from "../errors/BadRequestError.js";
+import { trimOrThrow } from "../utils/validation.js";
 
 const createPipelineSchema = z.object({
   name: z.string(),
@@ -34,10 +35,7 @@ export async function createPipelineController(
   try {
     const pipelineData: NewPipeline = createPipelineSchema.parse(req.body);
 
-    pipelineData.name = pipelineData.name?.trim();
-
-    if (!pipelineData.name)
-      throw new BadRequestError("Pipeline name is required");
+    pipelineData.name = trimOrThrow(pipelineData.name, "Pipeline name");
 
     if (pipelineData.processingActionType === undefined)
       throw new BadRequestError("Processing action type is required");
@@ -62,14 +60,13 @@ export async function updatePipelineController(
     const { pipelineId } = req.params as { pipelineId: string };
     const pipelineData = updatePipelineSchema.parse(req.body);
 
-    if (!pipelineId?.trim())
-      throw new BadRequestError("Pipeline id is required");
+    const trimmedPipelineId = trimOrThrow(pipelineId, "Pipeline id");
 
     if (!pipelineData.name && pipelineData.processingActionType === undefined)
       throw new BadRequestError("At least one field is required");
 
     const updatedPipeline = await updatePipelineService(
-      pipelineId.trim(),
+      trimmedPipelineId,
       pipelineData.name?.trim(),
       pipelineData.processingActionType,
     );
@@ -114,10 +111,9 @@ export async function getPipelineByIdController(
   try {
     const { pipelineId } = req.params as { pipelineId: string };
 
-    if (!pipelineId.trim())
-      throw new BadRequestError("Pipeline id is required");
-
-    const pipeline = await getPipelineByIdService(pipelineId.trim());
+    const pipeline = await getPipelineByIdService(
+      trimOrThrow(pipelineId, "Pipeline id"),
+    );
 
     if (!pipeline) return res.status(404).json({ error: "Pipeline not found" });
 
@@ -135,10 +131,9 @@ export async function getPipelineByNameController(
   try {
     const { pipelineName } = req.params as { pipelineName: string };
 
-    if (!pipelineName.trim())
-      throw new BadRequestError("Pipeline name is required");
-
-    const pipeline = await getPipelineByNameService(pipelineName.trim());
+    const pipeline = await getPipelineByNameService(
+      trimOrThrow(pipelineName, "Pipeline name"),
+    );
 
     if (!pipeline) return res.status(404).json({ error: "Pipeline not found" });
 
@@ -156,10 +151,9 @@ export async function isPipelineDeletedController(
   try {
     const { pipelineId } = req.params as { pipelineId: string };
 
-    if (!pipelineId.trim())
-      throw new BadRequestError("Pipeline id is required");
-
-    const isDeleted = await isPipelineDeletedService(pipelineId.trim());
+    const isDeleted = await isPipelineDeletedService(
+      trimOrThrow(pipelineId, "Pipeline id"),
+    );
 
     return res.status(200).json({ isDeleted: isDeleted });
   } catch (error) {
@@ -175,10 +169,9 @@ export async function isPipelineDeletedByNameController(
   try {
     const { pipelineName } = req.params as { pipelineName: string };
 
-    if (!pipelineName.trim())
-      throw new BadRequestError("Pipeline id is required");
-
-    const isDeleted = await isPipelineDeletedByNameService(pipelineName.trim());
+    const isDeleted = await isPipelineDeletedByNameService(
+      trimOrThrow(pipelineName, "Pipeline name"),
+    );
 
     return res.status(200).json({ isDeleted: isDeleted });
   } catch (error) {
@@ -201,10 +194,7 @@ export async function deletePipelineController(
     const field = pipelineId ? "id" : "name";
     const value = pipelineId ?? pipelineName;
 
-    const trimmedValue = value?.trim();
-
-    if (!trimmedValue)
-      throw new BadRequestError(`Pipeline ${field} is required`);
+    const trimmedValue = trimOrThrow(value, field);
 
     const pipelineHandlers = buildPipelineHandlers(field);
 
