@@ -4,6 +4,8 @@ import {
   getAllPipelinesController,
   getPipelineByIdController,
   getPipelineByNameController,
+  isPipelineDeletedByNameController,
+  isPipelineDeletedController,
   updatePipelineController,
 } from "../controllers/pipeline.controller.js";
 
@@ -20,4 +22,14 @@ pipelineRoutes.get("/pipelines/id/:pipelineId", getPipelineByIdController);
 pipelineRoutes.get(
   "/pipelines/name/:pipelineName",
   getPipelineByNameController,
+);
+
+pipelineRoutes.get(
+  "/pipelines/:pipelineId/is-deleted",
+  isPipelineDeletedController,
+);
+
+pipelineRoutes.get(
+  "/pipelines/by-name/:pipelineName/is-deleted",
+  isPipelineDeletedByNameController,
 );

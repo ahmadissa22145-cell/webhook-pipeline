@@ -5,6 +5,8 @@ import {
   getAllPipelinesService,
   getPipelineByIdService,
   getPipelineByNameService,
+  isPipelineDeletedByNameService,
+  isPipelineDeletedService,
   updatePipelineService,
 } from "../services/pipeline.service.js";
 import { z } from "zod";
@@ -135,6 +137,44 @@ export async function getPipelineByNameController(
     if (!pipeline) return res.status(404).json({ error: "Pipeline not found" });
 
     return res.status(200).json({ data: pipeline });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function isPipelineDeletedController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { pipelineId } = req.params as { pipelineId: string };
+
+    if (!pipelineId.trim())
+      throw new BadRequestError("Pipeline id is required");
+
+    const isDeleted = await isPipelineDeletedService(pipelineId.trim());
+
+    return res.status(200).json({ isDeleted: isDeleted });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function isPipelineDeletedByNameController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { pipelineName } = req.params as { pipelineName: string };
+
+    if (!pipelineName.trim())
+      throw new BadRequestError("Pipeline id is required");
+
+    const isDeleted = await isPipelineDeletedByNameService(pipelineName.trim());
+
+    return res.status(200).json({ isDeleted: isDeleted });
   } catch (error) {
     next(error);
   }
