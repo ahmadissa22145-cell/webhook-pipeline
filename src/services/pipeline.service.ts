@@ -71,7 +71,7 @@ export async function getAllPipelinesService() {
 }
 
 export async function getPipelineByIdService(id: string) {
-  return await getPipelineById(trimOrThrow(id, "Pipeline id"));
+  return await getPipelineById(id);
 }
 
 export async function getPipelineByNameService(name: string) {

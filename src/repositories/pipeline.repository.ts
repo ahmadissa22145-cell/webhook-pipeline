@@ -1,6 +1,11 @@
 import { ProcessingActionType } from "src/types/processingAction.type";
 import { db } from "../db/index.js";
-import { NewPipeline, Pipeline, pipelines } from "../db/schema/index.js";
+import {
+  NewPipeline,
+  Pipeline,
+  pipelines,
+  sources,
+} from "../db/schema/index.js";
 import { and, eq, isNotNull, isNull } from "drizzle-orm";
 
 type UpdatePipelineInput = {
@@ -48,28 +53,75 @@ export async function updatePipeline(
   return updatedPipelines ?? null;
 }
 
-// ================== READ ==================
+// ================== READ ===================
 
 export async function getAllPipelines() {
-  const storedPipelines = await db.select().from(pipelines);
+  const storedPipelines = await db
+    .select({
+      id: pipelines.id,
+      name: pipelines.name,
+      processingActionType: pipelines.processingActionType,
+      createdAt: pipelines.createdAt,
+      updatedAt: pipelines.updatedAt,
+      deletedAt: pipelines.deletedAt,
 
+      sourceId: sources.id,
+      sourceToken: sources.token,
+      sourceIsActive: sources.isActive,
+    })
+    .from(pipelines)
+    .leftJoin(
+      sources,
+      and(eq(pipelines.id, sources.pipelineId), isNull(sources.deletedAt)),
+    )
+    .where(isNull(pipelines.deletedAt));
   return storedPipelines;
 }
 
 export async function getPipelineById(id: string) {
   const [storedPipelines] = await db
-    .select()
+    .select({
+      id: pipelines.id,
+      name: pipelines.name,
+      processingActionType: pipelines.processingActionType,
+      createdAt: pipelines.createdAt,
+      updatedAt: pipelines.updatedAt,
+      deletedAt: pipelines.deletedAt,
+
+      sourceId: sources.id,
+      sourceToken: sources.token,
+      sourceIsActive: sources.isActive,
+    })
     .from(pipelines)
-    .where(eq(pipelines.id, id));
+    .leftJoin(
+      sources,
+      and(eq(pipelines.id, sources.pipelineId), isNull(sources.deletedAt)),
+    )
+    .where(and(eq(pipelines.id, id), isNull(pipelines.deletedAt)));
 
   return storedPipelines ?? null;
 }
 
 export async function getPipelineByName(name: string) {
   const [storedPipelines] = await db
-    .select()
+    .select({
+      id: pipelines.id,
+      name: pipelines.name,
+      processingActionType: pipelines.processingActionType,
+      createdAt: pipelines.createdAt,
+      updatedAt: pipelines.updatedAt,
+      deletedAt: pipelines.deletedAt,
+
+      sourceId: sources.id,
+      sourceToken: sources.token,
+      sourceIsActive: sources.isActive,
+    })
     .from(pipelines)
-    .where(eq(pipelines.name, name));
+    .leftJoin(
+      sources,
+      and(eq(pipelines.id, sources.pipelineId), isNull(sources.deletedAt)),
+    )
+    .where(and(eq(pipelines.name, name), isNull(pipelines.deletedAt)));
 
   return storedPipelines ?? null;
 }
