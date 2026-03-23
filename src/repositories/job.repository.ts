@@ -27,6 +27,17 @@ export async function updateJobStatus(jobId: string, status: JobStatus) {
   return jobUpdated ?? null;
 }
 
+// ===========================================
+export async function incrementJobAttempts(jobId: string) {
+  const [jobUpdated] = await db
+    .update(jobs)
+    .set({ attempts: sql`${jobs.attempts} + 1` })
+    .where(eq(jobs.id, jobId))
+    .returning();
+
+  return jobUpdated ?? null;
+}
+
 // ================== READ ===================
 
 export async function listJobs(status?: JobStatus, limit?: number) {
@@ -82,6 +93,7 @@ export async function listJobs(status?: JobStatus, limit?: number) {
     .limit(limit ?? 10);
 }
 
+// ===========================================
 export async function getJobById(jobId: string) {
   const [job] = await db
     .select({

@@ -8,6 +8,7 @@ import {
 import {
   createJob,
   getJobById,
+  incrementJobAttempts,
   listJobs,
   updateJobStatus,
 } from "../repositories/job.repository.js";
@@ -36,7 +37,18 @@ export async function updateJobStatusService(jobId: string, status: JobStatus) {
 
   const jobUpdated = await updateJobStatus(jobId, status);
 
-  if (!jobUpdated) throw new InternalServerError("Failed to update job");
+  if (!jobUpdated) throw new InternalServerError("Failed to update job status");
+
+  return true;
+}
+
+// ===========================================
+export async function incrementJobAttemptsService(jobId: string) {
+  await getJobById(jobId);
+
+  const job = await incrementJobAttempts(jobId);
+
+  if (!job) throw new InternalServerError("Failed to update job attempts");
 
   return true;
 }
@@ -46,6 +58,8 @@ export async function updateJobStatusService(jobId: string, status: JobStatus) {
 export async function listJobsService(status?: JobStatus, limit?: number) {
   return await listJobs(status, limit);
 }
+
+// ===========================================
 
 export async function getJobByIdService(jobId: string) {
   if (!jobId) throw new BadRequestError("Job id is required");
