@@ -3,6 +3,7 @@ import pipelineRoutes from "./routes/pipeline.routes.js";
 import { errorLoggerMiddleware } from "./middlewares/errorLogger.middleware.js";
 import { errorHandlerMiddleware } from "./middlewares/errorHandler.middleware.js";
 import sourceRouter from "./routes/source.routes.js";
+import jobRouter from "./routes/job.routes.js";
 
 const app = express();
 
@@ -10,6 +11,7 @@ app.use(express.json());
 
 app.use("/api/pipelines", pipelineRoutes);
 app.use("/api/sources", sourceRouter);
+app.use("/api/jobs", jobRouter);
 
 app.use(errorLoggerMiddleware);
 app.use(errorHandlerMiddleware);
