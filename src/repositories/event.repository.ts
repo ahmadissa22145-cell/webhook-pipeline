@@ -21,6 +21,7 @@ export async function createEvent(
   return event;
 }
 
+// ================== READ ===================
 export async function getEventById(id: string) {
   const [event] = await db.select().from(events).where(eq(events.id, id));
 

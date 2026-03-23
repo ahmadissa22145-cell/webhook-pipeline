@@ -12,11 +12,11 @@ export async function createEventService(pipelineId: string, payload: unknown) {
 
   return await createEvent(trimmedId, payload, EventType.WEBHOOK);
 }
-
+// ================== READ ===================
 export async function getEventByIdService(id: string) {
   const trimmedId = id?.trim();
 
-  if (!trimmedId) throw new BadRequestError("Pipeline id is required");
+  if (!trimmedId) throw new BadRequestError("Event id is required");
 
   const event = await getEventById(trimmedId);
 
