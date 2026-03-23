@@ -1,9 +1,15 @@
 import { JobStatus } from "../types/jobStatus.type.js";
-import { BadRequestError, NotFoundError } from "../errors/index.js";
+import {
+  BadRequestError,
+  ConflictError,
+  InternalServerError,
+  NotFoundError,
+} from "../errors/index.js";
 import {
   createJob,
   getJobById,
   listJobs,
+  updateJobStatus,
 } from "../repositories/job.repository.js";
 import { getEventByIdService } from "./event.service.js";
 
@@ -15,6 +21,24 @@ export async function createJobService(eventId: string) {
   await getEventByIdService(trimmedId);
 
   return await createJob(trimmedId);
+}
+
+// ================== UPDATE ===================
+
+export async function updateJobStatusService(jobId: string, status: JobStatus) {
+  const job = await getJobByIdService(jobId);
+
+  if (job.status === JobStatus.COMPLETED)
+    throw new ConflictError("Completed job cannot be updated");
+
+  if (job.status === status)
+    throw new ConflictError("Job is already in the requested status");
+
+  const jobUpdated = await updateJobStatus(jobId, status);
+
+  if (!jobUpdated) throw new InternalServerError("Failed to update job");
+
+  return true;
 }
 
 // ================== READ ===================

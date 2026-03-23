@@ -15,6 +15,18 @@ export async function createJob(eventId: string) {
   return job;
 }
 
+// ================== UPDATE ===================
+
+export async function updateJobStatus(jobId: string, status: JobStatus) {
+  const [jobUpdated] = await db
+    .update(jobs)
+    .set({ status })
+    .where(eq(jobs.id, jobId))
+    .returning();
+
+  return jobUpdated ?? null;
+}
+
 // ================== READ ===================
 
 export async function listJobs(status?: JobStatus, limit?: number) {
@@ -23,7 +35,7 @@ export async function listJobs(status?: JobStatus, limit?: number) {
       .select({
         id: jobs.id,
         eventId: jobs.eventId,
-        status: sql<string>`
+        statusText: sql<string>`
     CASE 
       WHEN ${jobs.status} = 0 THEN 'PENDING'
       WHEN ${jobs.status} = 1 THEN 'PROCESSING'
@@ -33,6 +45,7 @@ export async function listJobs(status?: JobStatus, limit?: number) {
       ELSE 'unknown'
     END
   `,
+        status: jobs.status,
         attempts: jobs.attempts,
         processedAt: jobs.processedAt,
         createdAt: jobs.createdAt,
@@ -48,7 +61,7 @@ export async function listJobs(status?: JobStatus, limit?: number) {
     .select({
       id: jobs.id,
       eventId: jobs.eventId,
-      status: sql<string>`
+      statusText: sql<string>`
     CASE 
       WHEN ${jobs.status} = 0 THEN 'PENDING'
       WHEN ${jobs.status} = 1 THEN 'PROCESSING'
@@ -58,6 +71,7 @@ export async function listJobs(status?: JobStatus, limit?: number) {
       ELSE 'unknown'
     END
   `,
+      status: jobs.status,
       attempts: jobs.attempts,
       processedAt: jobs.processedAt,
       createdAt: jobs.createdAt,
@@ -73,7 +87,7 @@ export async function getJobById(jobId: string) {
     .select({
       id: jobs.id,
       eventId: jobs.eventId,
-      status: sql<string>`
+      statusText: sql<string>`
     CASE 
       WHEN ${jobs.status} = 0 THEN 'PENDING'
       WHEN ${jobs.status} = 1 THEN 'PROCESSING'
@@ -83,6 +97,7 @@ export async function getJobById(jobId: string) {
       ELSE 'unknown'
     END
   `,
+      status: jobs.status,
       attempts: jobs.attempts,
       processedAt: jobs.processedAt,
       createdAt: jobs.createdAt,
