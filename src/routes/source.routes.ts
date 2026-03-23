@@ -19,7 +19,7 @@ sourceRouter.patch("/:id/status", updateSourceStatusController);
 // ========== READ ==========
 sourceRouter.get("/", listSourcesController);
 
-// by token 
+// by token
 sourceRouter.get("/by-token/:token", getSourceByTokenController);
 
 // by id
