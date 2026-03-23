@@ -3,10 +3,7 @@ import { BadRequestError } from "../errors/index.js";
 import { EventType } from "../types/event.type.js";
 
 // ================== CREATE ===================
-export async function createEventService(
-  pipelineId: string,
-  payload: unknown,
-) {
+export async function createEventService(pipelineId: string, payload: unknown) {
   const trimmedId = pipelineId?.trim();
 
   if (!trimmedId) {
@@ -17,10 +14,5 @@ export async function createEventService(
     throw new BadRequestError("Payload is required");
   }
 
-  return await createEvent(
-    trimmedId,
-    payload,
-    EventType.WEBHOOK,
-  );
+  return await createEvent(trimmedId, payload, EventType.WEBHOOK);
 }
-

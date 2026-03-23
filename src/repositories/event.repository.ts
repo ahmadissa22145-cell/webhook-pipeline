@@ -6,14 +6,14 @@ import { events } from "../db/schema/index.js";
 export async function createEvent(
   pipelineId: string,
   payload: unknown,
-  eventType: EventType
+  eventType: EventType,
 ) {
   const [event] = await db
     .insert(events)
     .values({
       eventType,
       payload,
-      pipelineId
+      pipelineId,
     })
     .returning();
 
