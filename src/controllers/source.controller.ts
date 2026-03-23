@@ -4,6 +4,7 @@ import {
   getSourceByIdService,
   getSourceByTokenService,
   listSourcesService,
+  updateSourceStatusService,
 } from "../services/source.service.js";
 import { BadRequestError } from "../errors/BadRequestError.js";
 
@@ -26,6 +27,36 @@ export async function createSourceController(
     const source = await createSourceService(pipelineId.trim());
 
     res.status(201).json({
+      data: source,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+// ================== UPDATE ===================
+export async function updateSourceStatusController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { id } = req.params as { id: string };
+    const { isActive } = req.body as { isActive: boolean };
+
+    const trimmedId = id?.trim();
+
+    if (!trimmedId) {
+      throw new BadRequestError("Source id is required");
+    }
+
+    if (typeof isActive !== "boolean") {
+      throw new BadRequestError("isActive must be true or false");
+    }
+
+    const source = await updateSourceStatusService(trimmedId, isActive);
+
+    res.status(200).json({
       data: source,
     });
   } catch (error) {

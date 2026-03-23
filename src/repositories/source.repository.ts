@@ -14,6 +14,19 @@ export async function createSource(pipelineId: string) {
   return source;
 }
 
+// ================== UPDATE ===================
+export async function updateSourceStatus(id: string, isActive: boolean) {
+  const [updated] = await db
+    .update(sources)
+    .set({
+      isActive,
+    })
+    .where(and(eq(sources.id, id), isNull(sources.deletedAt)))
+    .returning();
+
+  return updated ?? null;
+}
+
 // ================== READ ====================
 export async function getSourceById(id: string) {
   const [source] = await db

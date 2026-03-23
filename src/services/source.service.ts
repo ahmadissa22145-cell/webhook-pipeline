@@ -3,6 +3,7 @@ import {
   getSourceById,
   getSourceByToken,
   listSources,
+  updateSourceStatus,
 } from "../repositories/source.repository.js";
 
 import {
@@ -31,6 +32,32 @@ export async function createSourceService(pipelineId: string) {
   }
 
   return await createSource(pipelineId);
+}
+
+// ================== UPDATE ===================
+
+export async function updateSourceStatusService(id: string, isActive: boolean) {
+  if (!id) {
+    throw new BadRequestError("Source id is required");
+  }
+
+  if (typeof isActive !== "boolean") {
+    throw new BadRequestError("isActive must be true or false");
+  }
+
+  const source = await getSourceById(id);
+
+  if (!source) {
+    throw new NotFoundError(`Source with id '${id}' not found`);
+  }
+
+  const updated = await updateSourceStatus(id, isActive);
+
+  if (!updated) {
+    throw new NotFoundError(`Source with id '${id}' not found`);
+  }
+
+  return updated;
 }
 
 // ================== READ ===================
