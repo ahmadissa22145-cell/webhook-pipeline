@@ -1,5 +1,6 @@
 import {
   createSource,
+  deleteSource,
   getSourceById,
   getSourceByToken,
   listSources,
@@ -45,16 +46,18 @@ export async function updateSourceStatusService(id: string, isActive: boolean) {
     throw new BadRequestError("isActive must be true or false");
   }
 
-  const source = await getSourceById(id);
+  const source = await getSourceByIdService(id);
 
-  if (!source) {
-    throw new NotFoundError(`Source with id '${id}' not found`);
+  if (source.isActive === isActive) {
+    throw new BadRequestError(
+      `Source is already ${isActive ? "active" : "inactive"}`,
+    );
   }
 
   const updated = await updateSourceStatus(id, isActive);
 
   if (!updated) {
-    throw new NotFoundError(`Source with id '${id}' not found`);
+    throw new BadRequestError("Failed to update source");
   }
 
   return updated;
@@ -92,4 +95,25 @@ export async function getSourceByTokenService(token: string) {
 
 export async function listSourcesService() {
   return await listSources();
+}
+
+// ================== DELETE ===================
+export async function deleteSourceService(id: string) {
+  if (!id) {
+    throw new BadRequestError("Source id is required");
+  }
+
+  const source = await getSourceByIdService(id);
+
+  if (source.isActive) {
+    throw new ConflictError("Cannot delete active source");
+  }
+
+  const deleted = await deleteSource(id);
+
+  if (!deleted) {
+    throw new NotFoundError(`Source with id '${id}' not found`);
+  }
+
+  return deleted;
 }

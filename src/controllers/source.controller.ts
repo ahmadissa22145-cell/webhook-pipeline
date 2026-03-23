@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import {
   createSourceService,
+  deleteSourceService,
   getSourceByIdService,
   getSourceByTokenService,
   listSourcesService,
@@ -125,6 +126,29 @@ export async function listSourcesController(
     res.status(200).json({
       data: sources,
     });
+  } catch (error) {
+    next(error);
+  }
+}
+
+// ================== DELETE ===================
+export async function deleteSourceController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { id } = req.params as { id: string };
+
+    const trimmedId = id?.trim();
+
+    if (!trimmedId) {
+      throw new BadRequestError("Source id is required");
+    }
+
+    await deleteSourceService(trimmedId);
+
+    res.status(204).send();
   } catch (error) {
     next(error);
   }

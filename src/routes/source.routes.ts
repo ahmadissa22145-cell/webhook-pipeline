@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createSourceController,
+  deleteSourceController,
   getSourceByIdController,
   getSourceByTokenController,
   listSourcesController,
@@ -15,5 +16,7 @@ sourceRouter.get("/:id", getSourceByIdController);
 
 sourceRouter.post("/", createSourceController);
 sourceRouter.patch("/:id/status", updateSourceStatusController);
+
+sourceRouter.delete("/:id", deleteSourceController);
 
 export default sourceRouter;
