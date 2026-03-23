@@ -45,18 +45,18 @@ export async function updatePipelineService(
   name?: string,
   processingAction?: ProcessingActionType,
 ) {
-  if (!name?.trim() && processingAction === undefined)
+  if (!name && processingAction === undefined)
     throw new BadRequestError("At least one field is required");
 
   if (name) {
     const existing = await getPipelineByName(name);
 
-    if (existing?.id !== id) {
+    if (existing && existing.id !== id) {
       throw new ConflictError(`Pipeline with name '${name}' already exists`);
     }
   }
 
-  return await updatePipeline(id, name?.trim(), processingAction);
+  return await updatePipeline(id, name, processingAction);
 }
 
 // ================== READ ==================

@@ -36,11 +36,11 @@ export async function updatePipeline(
 ) {
   const updateData: UpdatePipelineInput = {};
 
-  if (name !== undefined) {
+  if (name) {
     updateData.name = name;
   }
 
-  if (processingAction) {
+  if (processingAction !== undefined) {
     updateData.processingActionType = processingAction;
   }
 
