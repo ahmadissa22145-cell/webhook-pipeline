@@ -10,32 +10,34 @@ import {
   updatePipelineController,
 } from "../controllers/pipeline.controller.js";
 
-export const pipelineRoutes = Router();
+const pipelineRoutes = Router();
 
 // ========== CREATE ===========
-pipelineRoutes.post("/pipelines", createPipelineController);
+pipelineRoutes.post("/", createPipelineController);
 
 // ========== UPDATE ==========
-pipelineRoutes.patch("/pipelines/:id", updatePipelineController);
+pipelineRoutes.patch("/:id", updatePipelineController);
 
 // ========== READ ==========
-pipelineRoutes.get("/pipelines", getAllPipelinesController);
+pipelineRoutes.get("/", getAllPipelinesController);
 
 // by id
-pipelineRoutes.get("/pipelines/:id", getPipelineByIdController);
+pipelineRoutes.get("/:id", getPipelineByIdController);
 
 // by name
-pipelineRoutes.get("/pipelines/by-name/:name", getPipelineByNameController);
+pipelineRoutes.get("/by-name/:name", getPipelineByNameController);
 
 // ========== STATUS ==========
-pipelineRoutes.get("/pipelines/:id/is-deleted", isPipelineDeletedController);
+pipelineRoutes.get("/:id/is-deleted", isPipelineDeletedController);
 
 pipelineRoutes.get(
-  "/pipelines/by-name/:name/is-deleted",
+  "/by-name/:name/is-deleted",
   isPipelineDeletedByNameController,
 );
 
 // ========== DELETE ==========
-pipelineRoutes.delete("/pipelines/:id", deletePipelineController);
+pipelineRoutes.delete("/:id", deletePipelineController);
 
-pipelineRoutes.delete("/pipelines/by-name/:name", deletePipelineController);
+pipelineRoutes.delete("/by-name/:name", deletePipelineController);
+
+export default pipelineRoutes;
