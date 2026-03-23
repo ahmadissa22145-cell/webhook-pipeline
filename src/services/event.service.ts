@@ -16,7 +16,7 @@ export async function createEventService(pipelineId: string, payload: unknown) {
 export async function getEventByIdService(id: string) {
   const trimmedId = id?.trim();
 
-  if (!trimmedId) throw new BadRequestError("Pipeline id is required");
+  if (!trimmedId) throw new BadRequestError("Event id is required");
 
   const event = await getEventById(trimmedId);
 
