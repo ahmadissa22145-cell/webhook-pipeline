@@ -1,5 +1,5 @@
 import express from "express";
-import { pipelineRoutes } from "./routes/pipeline.routes.js";
+import pipelineRoutes from "./routes/pipeline.routes.js";
 import { errorLoggerMiddleware } from "./middlewares/errorLogger.middleware.js";
 import { errorHandlerMiddleware } from "./middlewares/errorHandler.middleware.js";
 import sourceRouter from "./routes/source.routes.js";

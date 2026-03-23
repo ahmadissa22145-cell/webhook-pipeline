@@ -1,10 +1,37 @@
 import { Request, Response, NextFunction } from "express";
 import {
+  createSourceService,
   getSourceByIdService,
   getSourceByTokenService,
   listSourcesService,
 } from "../services/source.service.js";
 import { BadRequestError } from "../errors/BadRequestError.js";
+
+// ================== CREATE ===================
+
+export async function createSourceController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { pipelineId } = req.body as {
+      pipelineId: string;
+    };
+
+    if (!pipelineId?.trim()) {
+      throw new BadRequestError("pipelineId are required");
+    }
+
+    const source = await createSourceService(pipelineId.trim());
+
+    res.status(201).json({
+      data: source,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
 
 // ================== READ ===================
 
