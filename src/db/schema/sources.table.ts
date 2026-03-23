@@ -1,23 +1,42 @@
-import { boolean, pgTable, timestamp, uuid } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  pgTable,
+  timestamp,
+  uuid,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
+import { isNull } from "drizzle-orm";
 import { pipelines } from "./pipelines.table.js";
-import { InferInsertModel, InferSelectModel } from "drizzle-orm";
 
-export const sources = pgTable("sources", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  token: uuid("token").unique().notNull().defaultRandom(),
-  isActive: boolean("is_active").notNull().default(true),
-  pipelineId: uuid("pipeline_id")
-    .notNull()
-    .unique()
-    .references(() => pipelines.id, { onDelete: "cascade" }),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at")
-    .notNull()
-    .defaultNow()
-    .$onUpdate(() => new Date()),
+export const sources = pgTable(
+  "sources",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
 
-  deletedAt: timestamp("deleted_at"),
-});
+    token: uuid("token").notNull().defaultRandom(),
 
-export type Source = InferSelectModel<typeof sources>;
-export type NewSource = InferInsertModel<typeof sources>;
+    isActive: boolean("is_active").notNull().default(true),
+
+    pipelineId: uuid("pipeline_id")
+      .notNull()
+      .references(() => pipelines.id, { onDelete: "cascade" }),
+
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+
+    updatedAt: timestamp("updated_at")
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+
+    deletedAt: timestamp("deleted_at"),
+  },
+  (table) => ({
+    uniqueTokenActive: uniqueIndex("sources_token_unique_active")
+      .on(table.token)
+      .where(isNull(table.deletedAt)),
+
+    uniquePipelineActive: uniqueIndex("sources_pipeline_unique_active")
+      .on(table.pipelineId)
+      .where(isNull(table.deletedAt)),
+  }),
+);
