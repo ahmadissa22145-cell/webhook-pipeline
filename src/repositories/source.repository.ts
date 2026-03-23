@@ -58,3 +58,16 @@ export async function listSources() {
 
   return storedSources;
 }
+
+// ================== DELETE ===================
+export async function deleteSource(id: string) {
+  const [deleted] = await db
+    .update(sources)
+    .set({
+      deletedAt: new Date(),
+    })
+    .where(and(eq(sources.id, id), isNull(sources.deletedAt)))
+    .returning();
+
+  return deleted ?? null;
+}
