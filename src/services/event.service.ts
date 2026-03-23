@@ -12,7 +12,7 @@ export async function createEventService(pipelineId: string, payload: unknown) {
 
   return await createEvent(trimmedId, payload, EventType.WEBHOOK);
 }
-
+// ================== READ ===================
 export async function getEventByIdService(id: string) {
   const trimmedId = id?.trim();
 
