@@ -69,7 +69,8 @@ export async function listJobs(status?: JobStatus, limit?: number) {
 }
 
 export async function getJobById(jobId: string) {
-  const [job] = await db.select({
+  const [job] = await db
+    .select({
       id: jobs.id,
       eventId: jobs.eventId,
       status: sql<string>`
@@ -86,7 +87,9 @@ export async function getJobById(jobId: string) {
       processedAt: jobs.processedAt,
       createdAt: jobs.createdAt,
       updatedAt: jobs.updatedAt,
-    }).from(jobs).where(eq(jobs.id, jobId));
+    })
+    .from(jobs)
+    .where(eq(jobs.id, jobId));
 
   return job ?? null;
 }
