@@ -2,7 +2,7 @@ import { and, eq, isNull } from "drizzle-orm";
 import { db } from "../db/index.js";
 import { sources } from "../db/schema/index.js";
 
-// ================== READ ===================
+// ================== READ ====================
 export async function getSourceById(id: string) {
   const [source] = await db
     .select()

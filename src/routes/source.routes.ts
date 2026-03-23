@@ -11,5 +11,4 @@ sourceRouter.get("/", listSourcesController);
 sourceRouter.get("/by-token/:token", getSourceByTokenController);
 sourceRouter.get("/:id", getSourceByIdController);
 
-
 export default sourceRouter;
