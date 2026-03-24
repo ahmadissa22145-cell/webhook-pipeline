@@ -5,6 +5,7 @@ import { errorHandlerMiddleware } from "./middlewares/errorHandler.middleware.js
 import sourceRouter from "./routes/source.routes.js";
 import jobRouter from "./routes/job.routes.js";
 import webhookRouter from "./routes/webhook.routes.js";
+import subscriberRouter from "./routes/subscriber.routes.js";
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use("/api/pipelines", pipelineRoutes);
 app.use("/api/sources", sourceRouter);
 app.use("/api/jobs", jobRouter);
+app.use("/api/subscribers", subscriberRouter);
 app.use("/api/webhooks", webhookRouter);
 
 app.use(errorLoggerMiddleware);
