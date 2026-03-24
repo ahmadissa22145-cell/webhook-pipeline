@@ -147,3 +147,36 @@ export async function getPipelinesBySubscriberId(subscriberId: string) {
       ),
     );
 }
+
+// ================= DELETE ====================
+
+export async function unsubscribe(pipelineId: string, subscriberId: string) {
+  const [updated] = await db
+    .delete(pipelineSubscribers)
+    .where(
+      and(
+        eq(pipelineSubscribers.pipelineId, pipelineId),
+        eq(pipelineSubscribers.subscriberId, subscriberId),
+        isNull(pipelineSubscribers.unsubscribedAt),
+      ),
+    )
+    .returning();
+
+  return updated ?? null;
+}
+
+// =========================================
+
+export async function unsubscribeByID(id: string) {
+  const [updated] = await db
+    .delete(pipelineSubscribers)
+    .where(
+      and(
+        eq(pipelineSubscribers.id, id),
+        isNull(pipelineSubscribers.unsubscribedAt),
+      ),
+    )
+    .returning();
+
+  return updated ?? null;
+}

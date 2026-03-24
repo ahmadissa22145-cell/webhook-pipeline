@@ -5,6 +5,8 @@ import {
   getSubscriptionById,
   getSubscriptionByPipelineNameAndUrl,
   listSubscriptions,
+  unsubscribe,
+  unsubscribeByID,
 } from "../repositories/pipelineSubscriber.repository.js";
 import {
   BadRequestError,
@@ -147,4 +149,58 @@ export async function getPipelinesBySubscriberIdService(subscriberId: string) {
   const pipelines = await getPipelinesBySubscriberId(trimmedId);
 
   return pipelines;
+}
+
+// ================= DELETE ====================
+
+export async function unsubscribeService(
+  pipelineId: string,
+  subscriberId: string,
+) {
+  const trimmedPipelineId = pipelineId?.trim();
+  const trimmedSubscriberId = subscriberId?.trim();
+
+  if (!trimmedPipelineId || !trimmedSubscriberId) {
+    throw new BadRequestError("Pipeline ID and Subscriber ID are required");
+  }
+
+  await getPipelineByIdService(trimmedPipelineId);
+  await getSubscriberByIdService(trimmedSubscriberId);
+
+  const existing = await getActiveSubscription(
+    trimmedPipelineId,
+    trimmedSubscriberId,
+  );
+
+  if (!existing) {
+    throw new NotFoundError("Subscription not found or already unsubscribed");
+  }
+
+  const updated = await unsubscribe(trimmedPipelineId, trimmedSubscriberId);
+
+  if (!updated) {
+    throw new InternalServerError("Failed to unsubscribe");
+  }
+
+  return true;
+}
+
+// =========================================
+
+export async function unsubscribeByIdService(id: string) {
+  const trimmedId = id?.trim();
+
+  if (!trimmedId) {
+    throw new BadRequestError("Subscription ID are required");
+  }
+
+  await getSubscriptionById(trimmedId);
+
+  const updated = await unsubscribeByID(trimmedId);
+
+  if (!updated) {
+    throw new InternalServerError("Failed to unsubscribe");
+  }
+
+  return true;
 }

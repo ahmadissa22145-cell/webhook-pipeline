@@ -5,6 +5,8 @@ import {
   getSubscriptionByNameAndUrlController,
   listSubscriptionsController,
   subscribeController,
+  unsubscribeByIDController,
+  unsubscribeController,
 } from "../controllers/pipelineSubscriber.controller.js";
 
 const pipelineSubscriberRouter = Router();
@@ -21,5 +23,10 @@ pipelineSubscriberRouter.get(
 pipelineSubscriberRouter.get("/search", getSubscriptionByNameAndUrlController);
 pipelineSubscriberRouter.get("/:id", getSubscriptionByIdController);
 pipelineSubscriberRouter.get("/", listSubscriptionsController);
+
+// ================== DELETE ===================
+
+pipelineSubscriberRouter.delete("/unsubscribe", unsubscribeController);
+pipelineSubscriberRouter.delete("/unsubscribe/:id", unsubscribeByIDController);
 
 export default pipelineSubscriberRouter;

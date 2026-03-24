@@ -5,6 +5,8 @@ import {
   getSubscriptionByNameAndUrlService,
   listSubscriptionsService,
   subscribeService,
+  unsubscribeByIdService,
+  unsubscribeService,
 } from "../services/pipelineSubscriber.service.js";
 import { BadRequestError } from "../errors/BadRequestError.js";
 import { trimOrThrow } from "../utils/validation.js";
@@ -136,6 +138,57 @@ export async function getPipelinesBySubscriberIdController(
     res.status(200).json({
       data: pipelines,
     });
+  } catch (error) {
+    next(error);
+  }
+}
+
+// ================= DELETE ====================
+export async function unsubscribeController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { pipelineId, subscriberId } = req.query as {
+      pipelineId: string;
+      subscriberId: string;
+    };
+
+    const trimmedPipelineId = pipelineId?.trim();
+    const trimmedSubscriberId = subscriberId?.trim();
+
+    if (!trimmedPipelineId || !trimmedSubscriberId) {
+      throw new BadRequestError("Pipeline ID and Subscriber ID are required");
+    }
+
+    await unsubscribeService(trimmedPipelineId, trimmedSubscriberId);
+
+    res.status(204).send(); // No Content
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function unsubscribeByIDController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { id } = req.params as {
+      id: string;
+    };
+
+    const trimmedId = id?.trim();
+
+    if (!trimmedId) {
+      throw new BadRequestError("Subscription ID are required");
+    }
+
+    await unsubscribeByIdService(trimmedId);
+
+    res.status(204).send(); // No Content
   } catch (error) {
     next(error);
   }
