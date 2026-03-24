@@ -1,5 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { subscribeService } from "../services/pipelineSubscriber.service.js";
+import {
+  getSubscriptionByIdService,
+  subscribeService,
+} from "../services/pipelineSubscriber.service.js";
 import { BadRequestError } from "../errors/BadRequestError.js";
 
 // ================== CREATE ===================
@@ -28,6 +31,29 @@ export async function subscribeController(
     );
 
     res.status(201).json({
+      data: subscription,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getSubscriptionByIdController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { id } = req.params as { id: string };
+
+    const trimmedId = id?.trim();
+
+    if (!trimmedId) {
+      throw new BadRequestError("Subscription ID is required");
+    }
+    const subscription = await getSubscriptionByIdService(trimmedId);
+
+    res.status(200).json({
       data: subscription,
     });
   } catch (error) {
