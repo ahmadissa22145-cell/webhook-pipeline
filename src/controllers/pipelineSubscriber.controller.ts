@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import {
-  checkSubscriptionService,
   getSubscriptionByIdService,
   getSubscriptionByNameAndUrlService,
   listSubscriptionsService,
@@ -86,37 +85,7 @@ export async function getSubscriptionByIdController(
   }
 }
 // ========================================
-export async function checkSubscriptionController(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
-  try {
-    const { pipelineId, subscriberId } = req.query as {
-      pipelineId: string;
-      subscriberId: string;
-    };
 
-    const trimmedPipelineId = pipelineId?.trim();
-    const trimmedSubscriberId = subscriberId?.trim();
-
-    if (!trimmedPipelineId || !trimmedSubscriberId) {
-      throw new BadRequestError("Pipeline ID and Subscriber ID is required");
-    }
-
-    const subscription = await checkSubscriptionService(
-      trimmedPipelineId,
-      trimmedSubscriberId,
-    );
-
-    res.status(200).json({
-      data: subscription,
-    });
-  } catch (error) {
-    next(error);
-  }
-}
-// ========================================
 export async function getSubscriptionByNameAndUrlController(
   req: Request,
   res: Response,
