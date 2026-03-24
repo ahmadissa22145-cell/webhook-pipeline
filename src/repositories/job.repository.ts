@@ -35,6 +35,17 @@ export async function incrementJobAttempts(jobId: string) {
     .where(eq(jobs.id, jobId))
     .returning();
 
+  return jobUpdated.attempts ?? null;
+}
+
+// ===========================================
+export async function markJobAsProcessed(jobId: string) {
+  const [jobUpdated] = await db
+    .update(jobs)
+    .set({ processedAt: sql`NOW()`, status: JobStatus.COMPLETED })
+    .where(eq(jobs.id, jobId))
+    .returning();
+
   return jobUpdated ?? null;
 }
 
