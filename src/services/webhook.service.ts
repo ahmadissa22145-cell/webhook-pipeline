@@ -6,9 +6,9 @@ import { EventType } from "../types/event.type.js";
 import { getSourceByTokenService } from "./source.service.js";
 
 export async function handleWebhookService(token: string, payload: unknown) {
-  if (!token) throw new BadRequestError("Token is required");
+  if (!token.trim()) throw new BadRequestError("Token is required");
 
-  const source = await getSourceByTokenService(token);
+  const source = await getSourceByTokenService(token.trim());
 
   const event = await createEvent(
     source.pipelineId,
