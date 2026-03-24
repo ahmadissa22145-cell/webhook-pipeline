@@ -6,6 +6,7 @@ import sourceRouter from "./routes/source.routes.js";
 import jobRouter from "./routes/job.routes.js";
 import webhookRouter from "./routes/webhook.routes.js";
 import subscriberRouter from "./routes/subscriber.routes.js";
+import pipelineSubscriberRouter from "./routes/pipelineSubscriber.routes.js";
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use("/api/pipelines", pipelineRoutes);
 app.use("/api/sources", sourceRouter);
 app.use("/api/jobs", jobRouter);
 app.use("/api/subscribers", subscriberRouter);
+app.use("/api/pipeline-subscriber", pipelineSubscriberRouter);
 app.use("/api/webhooks", webhookRouter);
 
 app.use(errorLoggerMiddleware);
