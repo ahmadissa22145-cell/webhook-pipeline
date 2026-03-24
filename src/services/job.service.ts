@@ -10,6 +10,7 @@ import {
   getJobById,
   incrementJobAttempts,
   listJobs,
+  markJobAsProcessed,
   updateJobStatus,
 } from "../repositories/job.repository.js";
 import { getEventByIdService } from "./event.service.js";
@@ -29,13 +30,22 @@ export async function createJobService(eventId: string) {
 export async function updateJobStatusService(jobId: string, status: JobStatus) {
   const job = await getJobByIdService(jobId);
 
-  if (job.status === JobStatus.COMPLETED)
-    throw new ConflictError("Completed job cannot be updated");
+  if (job.status === JobStatus.COMPLETED || job.status === JobStatus.FAILED)
+    throw new ConflictError(`${job.status.toString()} job cannot be updated`);
 
   if (job.status === status)
     throw new ConflictError("Job is already in the requested status");
 
-  const jobUpdated = await updateJobStatus(jobId, status);
+  if (status === JobStatus.COMPLETED && job.status === JobStatus.PENDING) {
+    throw new ConflictError(
+      "Only processing or retrying jobs can be completed",
+    );
+  }
+
+  const jobUpdated =
+    status === JobStatus.COMPLETED
+      ? await markJobAsProcessed(jobId)
+      : await updateJobStatus(jobId, status);
 
   if (!jobUpdated) throw new InternalServerError("Failed to update job status");
 
@@ -46,11 +56,12 @@ export async function updateJobStatusService(jobId: string, status: JobStatus) {
 export async function incrementJobAttemptsService(jobId: string) {
   await getJobById(jobId);
 
-  const job = await incrementJobAttempts(jobId);
+  const attemptsCount = await incrementJobAttempts(jobId);
 
-  if (!job) throw new InternalServerError("Failed to update job attempts");
+  if (!attemptsCount)
+    throw new InternalServerError("Failed to update job attempts");
 
-  return true;
+  return attemptsCount;
 }
 
 // ================== READ ===================
