@@ -1,0 +1,2 @@
+ALTER TABLE "subscribers" DROP CONSTRAINT "subscribers_url_unique";--> statement-breakpoint
+CREATE UNIQUE INDEX "unique_active_subscriber_url" ON "subscribers" USING btree ("url") WHERE "subscribers"."deleted_at" IS NULL;
