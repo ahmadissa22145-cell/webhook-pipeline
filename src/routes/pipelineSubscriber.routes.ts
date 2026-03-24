@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  getPipelinesBySubscriberIdController,
   getSubscriptionByIdController,
   getSubscriptionByNameAndUrlController,
   listSubscriptionsController,
@@ -13,6 +14,10 @@ const pipelineSubscriberRouter = Router();
 pipelineSubscriberRouter.post("/", subscribeController);
 
 // ================== READ ===================
+pipelineSubscriberRouter.get(
+  "/:subscriberId/pipelines",
+  getPipelinesBySubscriberIdController,
+);
 pipelineSubscriberRouter.get("/search", getSubscriptionByNameAndUrlController);
 pipelineSubscriberRouter.get("/:id", getSubscriptionByIdController);
 pipelineSubscriberRouter.get("/", listSubscriptionsController);

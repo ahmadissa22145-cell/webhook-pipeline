@@ -123,3 +123,27 @@ export async function getSubscriptionByPipelineNameAndUrl(
 
   return subscription ?? null;
 }
+
+// =========================================
+export async function getPipelinesBySubscriberId(subscriberId: string) {
+  return await db
+    .select({
+      id: pipelineSubscribers.id,
+      pipelineId: pipelineSubscribers.pipelineId,
+      subscriptionCreatedAt: pipelineSubscribers.createdAt,
+      unsubscribedAt: pipelineSubscribers.unsubscribedAt,
+
+      pipelineName: pipelines.name,
+    })
+    .from(pipelines)
+    .innerJoin(
+      pipelineSubscribers,
+      eq(pipelines.id, pipelineSubscribers.pipelineId),
+    )
+    .where(
+      and(
+        eq(pipelineSubscribers.subscriberId, subscriberId),
+        isNull(pipelineSubscribers.unsubscribedAt),
+      ),
+    );
+}

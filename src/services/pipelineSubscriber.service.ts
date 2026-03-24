@@ -1,6 +1,7 @@
 import {
   createSubscription,
   getActiveSubscription,
+  getPipelinesBySubscriberId,
   getSubscriptionById,
   getSubscriptionByPipelineNameAndUrl,
   listSubscriptions,
@@ -129,4 +130,21 @@ export async function getSubscriptionByNameAndUrlService(
   }
 
   return subscription;
+}
+
+// ==========================================
+
+export async function getPipelinesBySubscriberIdService(subscriberId: string) {
+  const trimmedId = subscriberId?.trim();
+
+  if (!trimmedId) {
+    throw new BadRequestError("Subscriber ID is required");
+  }
+
+  //check if exists
+  await getSubscriberByIdService(trimmedId);
+
+  const pipelines = await getPipelinesBySubscriberId(trimmedId);
+
+  return pipelines;
 }
