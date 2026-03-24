@@ -1,5 +1,10 @@
+import { and, eq, isNull } from "drizzle-orm";
 import { db } from "../db/index.js";
-import { pipelineSubscribers } from "../db/schema/index.js";
+import {
+  pipelines,
+  pipelineSubscribers,
+  subscribers,
+} from "../db/schema/index.js";
 
 // ================== CREATE (SUBSCRIBE) ===================
 
@@ -16,4 +21,33 @@ export async function createSubscription(
     .returning();
 
   return subscription;
+}
+
+// ================== READ ===================
+export async function getSubscriptionById(id: string) {
+  const [subscription] = await db
+    .select({
+      id: pipelineSubscribers.id,
+      pipelineId: pipelineSubscribers.pipelineId,
+      subscriberId: pipelineSubscribers.subscriberId,
+      createdAt: pipelineSubscribers.createdAt,
+      unsubscribedAt: pipelineSubscribers.unsubscribedAt,
+
+      pipelineName: pipelines.name,
+      subscriberUrl: subscribers.url,
+    })
+    .from(pipelineSubscribers)
+    .innerJoin(pipelines, eq(pipelineSubscribers.pipelineId, pipelines.id))
+    .innerJoin(
+      subscribers,
+      eq(pipelineSubscribers.subscriberId, subscribers.id),
+    )
+    .where(
+      and(
+        eq(pipelineSubscribers.id, id),
+        isNull(pipelineSubscribers.unsubscribedAt),
+      ),
+    );
+
+  return subscription ?? null;
 }
