@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import {
-  checkSubscriptionService,
   getSubscriptionByIdService,
   getSubscriptionByNameAndUrlService,
   listSubscriptionsService,
@@ -86,6 +85,7 @@ export async function getSubscriptionByIdController(
   }
 }
 // ========================================
+
 export async function getSubscriptionByNameAndUrlController(
   req: Request,
   res: Response,
