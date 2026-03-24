@@ -1,11 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import {
+  getPipelinesBySubscriberIdService,
   getSubscriptionByIdService,
   getSubscriptionByNameAndUrlService,
   listSubscriptionsService,
   subscribeService,
 } from "../services/pipelineSubscriber.service.js";
 import { BadRequestError } from "../errors/BadRequestError.js";
+import { trimOrThrow } from "../utils/validation.js";
 
 // ================== CREATE ===================
 
@@ -113,6 +115,26 @@ export async function getSubscriptionByNameAndUrlController(
 
     res.status(200).json({
       data: subscription,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+// ========================================
+export async function getPipelinesBySubscriberIdController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { subscriberId } = req.params as { subscriberId: string };
+
+    const pipelines = await getPipelinesBySubscriberIdService(
+      trimOrThrow(subscriberId),
+    );
+
+    res.status(200).json({
+      data: pipelines,
     });
   } catch (error) {
     next(error);
