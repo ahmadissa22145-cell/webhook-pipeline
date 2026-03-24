@@ -51,3 +51,22 @@ export async function getSubscriptionById(id: string) {
 
   return subscription ?? null;
 }
+
+// =========================================
+export async function getActiveSubscription(
+  pipelineId: string,
+  subscriberId: string,
+) {
+  const [subscription] = await db
+    .select()
+    .from(pipelineSubscribers)
+    .where(
+      and(
+        eq(pipelineSubscribers.pipelineId, pipelineId),
+        eq(pipelineSubscribers.subscriberId, subscriberId),
+        isNull(pipelineSubscribers.unsubscribedAt),
+      ),
+    );
+
+  return subscription ?? null;
+}
