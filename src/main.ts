@@ -16,7 +16,7 @@ app.use("/api/pipelines", pipelineRoutes);
 app.use("/api/sources", sourceRouter);
 app.use("/api/jobs", jobRouter);
 app.use("/api/subscribers", subscriberRouter);
-app.use("/api/pipeline-subscriber", pipelineSubscriberRouter);
+app.use("/api/pipeline-subscribers", pipelineSubscriberRouter);
 app.use("/api/webhooks", webhookRouter);
 
 app.use(errorLoggerMiddleware);
