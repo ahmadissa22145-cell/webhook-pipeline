@@ -23,7 +23,7 @@ export async function createSubscriberService(url: string) {
     throw new BadRequestError("Subscriber Url is required");
   }
   let validUrl;
-  
+
   try {
     validUrl = new URL(trimmedUrl).toString();
   } catch {
