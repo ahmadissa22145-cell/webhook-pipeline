@@ -16,14 +16,14 @@ subscriberRouter.post("/", createSubscriberController);
 
 // ================== READ ===================
 
-subscriberRouter.get("/", listSubscribersController);
-
 subscriberRouter.get(
   "/by-pipelineId/:pipelineId",
   getSubscribersByPipelineIdController,
 );
 
 subscriberRouter.get("/:id", getSubscriberByIdController);
+
+subscriberRouter.get("/", listSubscribersController);
 
 // ================== UPDATE ===================
 subscriberRouter.patch("/:id", updateSubscriberUrlController);

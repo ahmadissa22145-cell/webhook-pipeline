@@ -1,7 +1,8 @@
 import { Router } from "express";
 import {
-  checkSubscriptionController,
   getSubscriptionByIdController,
+  getSubscriptionByNameAndUrlController,
+  listSubscriptionsController,
   subscribeController,
 } from "../controllers/pipelineSubscriber.controller.js";
 
@@ -12,7 +13,8 @@ const pipelineSubscriberRouter = Router();
 pipelineSubscriberRouter.post("/", subscribeController);
 
 // ================== READ ===================
-pipelineSubscriberRouter.get("/", checkSubscriptionController);
+pipelineSubscriberRouter.get("/search", getSubscriptionByNameAndUrlController);
 pipelineSubscriberRouter.get("/:id", getSubscriptionByIdController);
+pipelineSubscriberRouter.get("/", listSubscriptionsController);
 
 export default pipelineSubscriberRouter;
