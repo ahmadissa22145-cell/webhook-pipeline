@@ -36,6 +36,27 @@
       "when": 1774258347476,
       "tag": "0004_amused_changeling",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1774347188678,
+      "tag": "0005_whole_human_torch",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1774347274136,
+      "tag": "0006_subscriber_soft_delete_trigger",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1774349296943,
+      "tag": "0007_flimsy_green_goblin",
+      "breakpoints": true
     }
   ]
 }
