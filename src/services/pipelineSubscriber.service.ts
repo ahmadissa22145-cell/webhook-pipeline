@@ -2,6 +2,8 @@ import {
   createSubscription,
   getActiveSubscription,
   getSubscriptionById,
+  getSubscriptionByPipelineNameAndUrl,
+  listSubscriptions,
 } from "../repositories/pipelineSubscriber.repository.js";
 import {
   BadRequestError,
@@ -49,6 +51,15 @@ export async function subscribeService(
   return subscription;
 }
 
+// ================== READ ================
+export async function listSubscriptionsService(limit?: number) {
+  if (limit !== undefined && limit <= 0) {
+    throw new BadRequestError("Limit must be positive");
+  }
+
+  return await listSubscriptions(limit ?? 10);
+}
+
 // ========================================
 export async function getSubscriptionByIdService(id: string) {
   const trimmedId = id?.trim();
@@ -81,6 +92,36 @@ export async function checkSubscriptionService(
   const subscription = await getActiveSubscription(
     trimmedPipelineId,
     trimmedSubscriberId,
+  );
+
+  if (!subscription) {
+    throw new NotFoundError("Subscription not found");
+  }
+
+  return subscription;
+}
+// ==========================================
+export async function getSubscriptionByNameAndUrlService(
+  pipelineName: string,
+  subscriberUrl: string,
+) {
+  const trimmedName = pipelineName?.trim();
+  const trimmedUrl = subscriberUrl?.trim();
+
+  if (!trimmedName || !trimmedUrl) {
+    throw new BadRequestError("Pipeline name and subscriber URL are required");
+  }
+
+  let validUrl: string;
+  try {
+    validUrl = new URL(trimmedUrl).toString();
+  } catch {
+    throw new BadRequestError("Invalid URL format");
+  }
+
+  const subscription = await getSubscriptionByPipelineNameAndUrl(
+    trimmedName,
+    validUrl,
   );
 
   if (!subscription) {
