@@ -92,7 +92,9 @@ export async function getSubscribersByPipelineIdService(pipelineId: string) {
 
   await getPipelineByIdService(trimmedPipelineId);
 
-  return await getSubscribersByPipelineId(trimmedPipelineId);
+  const subscribers = await getSubscribersByPipelineId(trimmedPipelineId);
+
+  return subscribers ?? [];
 }
 
 // ================== UPDATE ===================
