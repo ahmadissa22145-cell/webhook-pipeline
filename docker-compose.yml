@@ -1,6 +1,17 @@
 version: "3.9"
 
 services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: webhook
+    ports:
+      - "5432:5432"
+    restart: always
+
   redis:
     image: redis:7
     container_name: redis
@@ -17,12 +28,14 @@ services:
       - "3000:3000"
     depends_on:
       - redis
+      - postgres
     restart: always
     env_file:
       - .env
     environment:
       - REDIS_HOST=redis
-    command: node dist/main.js
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/webhook
+    command: sh -c "npm run migrate && node dist/main.js"
 
 volumes:
   redis_data:
