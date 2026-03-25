@@ -3,6 +3,7 @@ import { getPipelineByIdService } from "./pipeline.service.js";
 import { createEventService } from "./event.service.js";
 import { jobQueue } from "../queue/job.queue.js";
 import { trimOrThrow } from "../utils/validation.js";
+import { createJobService } from "./job.service.js";
 
 export async function handleWebhookService(token: string, payload: unknown) {
   const trimmedToken = trimOrThrow(token, "Pipeline token");
@@ -12,9 +13,10 @@ export async function handleWebhookService(token: string, payload: unknown) {
   const pipeline = await getPipelineByIdService(source.pipelineId);
 
   const event = await createEventService(pipeline.id, payload);
+  const job = await createJobService(event.id);
 
   await jobQueue.add("process-event", {
-    jobId: event.id,
+    jobId: job.id,
     eventId: event.id,
   });
 
