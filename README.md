@@ -50,6 +50,7 @@ The database structure is intentionally designed with future scalability in mind
 ### Main Tables
 
 #### 1. Pipeline
+
 Stores the main pipeline configuration.
 
 - `id`
@@ -58,6 +59,7 @@ Stores the main pipeline configuration.
 - timestamps
 
 #### 2. Source
+
 Represents the webhook source for a pipeline.
 
 - unique token
@@ -66,9 +68,11 @@ Represents the webhook source for a pipeline.
 - separated from pipeline to support future multi-source expansion
 
 #### 3. Event
+
 Stores each incoming webhook payload before processing.
 
 #### 4. Job
+
 Tracks asynchronous processing state.
 
 - status
@@ -76,12 +80,15 @@ Tracks asynchronous processing state.
 - timestamps
 
 #### 5. Subscriber
+
 Stores subscriber destination URLs.
 
 #### 6. Pipeline_Subscribers
+
 Join table for the many-to-many relationship between pipelines and subscribers.
 
 #### 7. Delivery
+
 Tracks delivery attempts for each subscriber.
 
 - status
@@ -94,6 +101,7 @@ Tracks delivery attempts for each subscriber.
 ## Design Decisions
 
 ### 1. Source is separated from Pipeline
+
 Although the current implementation may use one source per pipeline, this separation allows the system to support multiple webhook sources per pipeline in the future.
 
 It also keeps source-specific behavior isolated, such as:
@@ -105,6 +113,7 @@ It also keeps source-specific behavior isolated, such as:
 ---
 
 ### 2. Processing actions are stored as numeric values
+
 Processing actions are stored as numbers instead of strings.
 
 This was chosen to support:
@@ -121,6 +130,7 @@ That means a single pipeline could eventually apply multiple actions together, s
 ---
 
 ### 3. Asynchronous processing
+
 Webhook requests are accepted quickly and stored first.
 
 The heavy work is handled later through a background worker using **BullMQ**.
@@ -134,6 +144,7 @@ This improves:
 ---
 
 ### 4. Delivery tracking and retry support
+
 Each subscriber delivery is tracked independently.
 
 Failed deliveries can be retried, and their status is stored for later inspection.
@@ -169,9 +180,11 @@ This approach makes it easy to:
 ### Current Processing Actions
 
 #### 1. High Value Alert
+
 Used for transaction-like payloads.
 
 Features:
+
 - detects high-value transactions
 - classifies severity levels
 - generates alert messages
@@ -180,9 +193,11 @@ Features:
 ---
 
 #### 2. Post Notification
+
 Used for post-style payloads.
 
 Features:
+
 - validates required fields
 - builds a readable message
 - adds audit information
@@ -190,9 +205,11 @@ Features:
 ---
 
 #### 3. Sanitize
+
 Used for sensitive payloads that may contain private user information.
 
 Features:
+
 - masks card numbers
 - masks emails
 - can normalize strings
@@ -222,3 +239,4 @@ Examples of future improvements:
 
 ```bash
 docker compose up --build
+```
