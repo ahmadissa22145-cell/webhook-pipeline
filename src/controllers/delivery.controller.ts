@@ -1,38 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import {
-  createDeliveryService,
   getDeliveryByIdService,
   listDeliveriesService,
 } from "../services/delivery.service.js";
 import { BadRequestError } from "../errors/BadRequestError.js";
 import { trimOrThrow } from "../utils/validation.js";
-
-// ================== CREATE ===================
-
-export async function createDeliveryController(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
-  try {
-    const { jobId, subscriberId } = req.body as {
-      jobId: string;
-      subscriberId: string;
-    };
-
-    const trimmedJobId = trimOrThrow(jobId);
-    const trimmedSubscriberId = trimOrThrow(subscriberId);
-
-    const delivery = await createDeliveryService(
-      trimmedJobId,
-      trimmedSubscriberId,
-    );
-
-    res.status(201).json({ data: delivery });
-  } catch (err) {
-    next(err);
-  }
-}
 
 // ================== READ ===================
 
@@ -45,7 +17,6 @@ export async function getDeliveryByIdController(
     const { id } = req.params as { id: string };
 
     const trimmedId = trimOrThrow(id);
-    if (!trimmedId) throw new BadRequestError("Delivery ID required");
 
     const delivery = await getDeliveryByIdService(trimmedId);
 
