@@ -1,25 +1,22 @@
-import { BadRequestError } from "../errors/index.js";
-import { createEvent } from "../repositories/event.repository.js";
-import { createJob } from "../repositories/job.repository.js";
-import { jobQueue } from "../queue/job.queue.js";
-import { EventType } from "../types/event.type.js";
 import { getSourceByTokenService } from "./source.service.js";
+import { getPipelineByIdService } from "./pipeline.service.js";
+import { createEventService } from "./event.service.js";
+import { jobQueue } from "../queue/job.queue.js";
+import { trimOrThrow } from "../utils/validation.js";
 
 export async function handleWebhookService(token: string, payload: unknown) {
-  if (!token.trim()) throw new BadRequestError("Token is required");
+  const trimmedToken = trimOrThrow(token, "Pipeline token");
 
-  const source = await getSourceByTokenService(token.trim());
+  const source = await getSourceByTokenService(trimmedToken);
 
-  const event = await createEvent(
-    source.pipelineId,
-    payload,
-    EventType.WEBHOOK,
-  );
+  const pipeline = await getPipelineByIdService(source.pipelineId);
 
-  const job = await createJob(event.id);
+  const event = await createEventService(pipeline.id, payload);
 
-  await jobQueue.add("process-job", {
-    jobId: job.id,
+  await jobQueue.add("process-event", {
+    jobId: event.id,
     eventId: event.id,
   });
+
+  return true;
 }
