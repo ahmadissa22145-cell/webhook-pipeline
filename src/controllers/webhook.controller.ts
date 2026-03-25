@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { handleWebhookService } from "../services/webhook.service.js";
+import { trimOrThrow } from "../utils/validation.js";
 
 export async function handleWebhookController(
   req: Request,
@@ -9,7 +10,9 @@ export async function handleWebhookController(
   try {
     const { token } = req.params as { token: string };
 
-    await handleWebhookService(token, req.body);
+    const trimmedToken = trimOrThrow(token, "Pipeline token");
+
+    await handleWebhookService(trimmedToken, req.body);
 
     res.status(202).json({
       message: "Webhook received",
