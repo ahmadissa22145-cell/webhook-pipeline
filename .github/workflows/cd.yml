@@ -16,11 +16,20 @@ jobs:
       - name: Setup Docker
         uses: docker/setup-buildx-action@v3
 
+      - name: Create .env file
+        run: |
+          echo "DATABASE_URL=postgres://postgres:postgres@postgres:5432/webhook" >> .env
+          echo "REDIS_HOST=redis" >> .env
+
       - name: Run full app (Docker Compose)
         run: docker compose up -d --build
 
-      - name: Wait for app
-        run: sleep 10
+      - name: Wait for services
+        run: sleep 15
 
       - name: Check running containers
         run: docker ps
+
+      - name: Show logs (debug)
+        if: failure()
+        run: docker compose logs
