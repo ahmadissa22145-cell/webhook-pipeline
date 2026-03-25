@@ -1,25 +1,26 @@
 import { ProcessingActionType } from "../types/processingAction.type.js";
+import { highValueAlertPipelineAction } from "./pipelineActions/highValueAlert.pipelineActions.js";
 
-// Not Redy
+//in progress
 export async function processPayloadService(
   processingAction: ProcessingActionType,
   payload: unknown,
 ) {
-  if (payload) {
-    processingAction += 1;
-  }
-
-  if (processingAction & ProcessingActionType.FILTER) {
-    //logic
+  let result = payload;
+  if (processingAction & ProcessingActionType.ALERT) {
+    result = highValueAlertPipelineAction(payload);
+    if (result === null) {
+      return null;
+    }
   }
 
   if (processingAction & ProcessingActionType.TRANSFORM) {
-    //logic
+    // logic
   }
 
   if (processingAction & ProcessingActionType.ENRICH) {
     //logic
   }
 
-  return payload;
+  return result;
 }

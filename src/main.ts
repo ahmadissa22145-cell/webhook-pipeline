@@ -8,7 +8,7 @@ import webhookRouter from "./routes/webhook.routes.js";
 import subscriberRouter from "./routes/subscriber.routes.js";
 import pipelineSubscriberRouter from "./routes/pipelineSubscriber.routes.js";
 import deliveryRouter from "./routes/delivery.routes.js";
-import "./services/worker.service.js";
+import "./workers/worker.js";
 
 const app = express();
 
