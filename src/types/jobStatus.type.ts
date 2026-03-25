@@ -4,4 +4,5 @@ export enum JobStatus {
   COMPLETED = 2,
   FAILED = 3,
   RETRYING = 4,
+  SKIPPED = 5,
 }

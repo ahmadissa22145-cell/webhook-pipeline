@@ -77,7 +77,9 @@ export async function getJobByIdService(jobId: string) {
 
   const job = await getJobById(jobId);
 
-  if (!job) throw new NotFoundError(`Job with id ${jobId} not found`);
+  if (!job) {
+    throw new NotFoundError(`Job with id ${jobId} not found`);
+  }
 
   return job;
 }
