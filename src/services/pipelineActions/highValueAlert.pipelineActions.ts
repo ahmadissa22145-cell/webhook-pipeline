@@ -24,7 +24,6 @@ export function highValueAlertPipelineAction(payload: unknown) {
     : `Transaction processed — $${p.amount} (${level})`;
 
   return {
-    ...p,
     alert: isAlert,
     level,
     alertMessage,
