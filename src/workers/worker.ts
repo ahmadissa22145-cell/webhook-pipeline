@@ -20,7 +20,6 @@ new Worker(
   "job-queue",
   async (job) => {
     const { jobId, eventId } = job.data;
-
     const storedJob = await getJobByIdService(jobId);
 
     if (
@@ -29,7 +28,6 @@ new Worker(
     ) {
       return;
     }
-
     const status =
       job.attemptsMade > 0 ? JobStatus.RETRYING : JobStatus.PROCESSING;
 
@@ -47,6 +45,15 @@ new Worker(
         pipeline.processingActionType,
         event.payload,
       );
+
+      if (result === null) {
+        logger.info(
+          `Process action skipped by job with id ${jobId} for event with id ${eventId}`,
+        );
+        await updateJobStatusService(jobId, JobStatus.SKIPPED);
+
+        return;
+      }
 
       // 4. get subscribers
       const subscribers = await getSubscribersByPipelineIdService(pipeline.id);
@@ -66,7 +73,7 @@ new Worker(
     } catch (error) {
       await incrementJobAttemptsService(jobId);
 
-      if (job.attemptsMade >= maxAttempts) {
+      if (job.attemptsMade + 1 >= maxAttempts) {
         await updateJobStatusService(jobId, JobStatus.FAILED);
       }
 
