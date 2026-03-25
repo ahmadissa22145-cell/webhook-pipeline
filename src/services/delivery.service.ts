@@ -24,6 +24,7 @@ import { trimOrThrow } from "../utils/validation.js";
 export async function createDeliveryService(
   jobId: string,
   subscriberId: string,
+  deliveredPayload: unknown,
 ) {
   const trimmedJobId = trimOrThrow(jobId, "Job id");
   const trimmedSubscriberId = trimOrThrow(subscriberId, "Subscriber id");
@@ -37,7 +38,11 @@ export async function createDeliveryService(
     throw new ConflictError("Delivery already exists");
   }
 
-  const delivery = await createDelivery(trimmedJobId, trimmedSubscriberId);
+  const delivery = await createDelivery(
+    trimmedJobId,
+    trimmedSubscriberId,
+    deliveredPayload,
+  );
 
   if (!delivery) {
     throw new InternalServerError("Failed to create delivery");

@@ -2,9 +2,9 @@ import {
   createDeliveryService,
   incrementDeliveryAttemptsService,
   updateDeliveryStatusService,
-} from "../services/delivery.service";
-import { DeliveryStatus } from "../types/deliveryStatus.type";
-import { logger } from "../utils/logger";
+} from "../services/delivery.service.js";
+import { DeliveryStatus } from "../types/deliveryStatus.type.js";
+import { logger } from "../utils/logger.js";
 
 const maxDeliveryAttempts = 3; // Delivery attempts
 export async function deliverToSubscribersWithRetry(
@@ -18,7 +18,7 @@ export async function deliverToSubscribersWithRetry(
 ) {
   return await Promise.allSettled(
     subscribers.map(async (sub) => {
-      const delivery = await createDeliveryService(jobId, sub.id);
+      const delivery = await createDeliveryService(jobId, sub.id, result);
 
       for (let attempt = 1; attempt <= maxDeliveryAttempts; attempt++) {
         try {

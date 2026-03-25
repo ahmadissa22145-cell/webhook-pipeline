@@ -5,12 +5,17 @@ import { and, eq, sql } from "drizzle-orm";
 
 // ================== CREATE ===================
 
-export async function createDelivery(jobId: string, subscriberId: string) {
+export async function createDelivery(
+  jobId: string,
+  subscriberId: string,
+  deliveredPayload: unknown,
+) {
   const [delivery] = await db
     .insert(deliveries)
     .values({
       jobId,
       subscriberId,
+      deliveredPayload,
     })
     .returning();
 
