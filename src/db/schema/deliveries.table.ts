@@ -1,4 +1,4 @@
-import { pgTable, smallint, timestamp, uuid } from "drizzle-orm/pg-core";
+import { jsonb, pgTable, smallint, timestamp, uuid } from "drizzle-orm/pg-core";
 import { jobs } from "./jobs.table.js";
 import { subscribers } from "./subscribers.table.js";
 import { InferInsertModel, InferSelectModel } from "drizzle-orm";
@@ -11,6 +11,7 @@ export const deliveries = pgTable("deliveries", {
   subscriberId: uuid("subscriber_id")
     .notNull()
     .references(() => subscribers.id, { onDelete: "cascade" }),
+  deliveredPayload: jsonb("delivered_payload").notNull(),  
   status: smallint("status").notNull().default(0),
   responseCode: smallint("response_code"),
   attempts: smallint("attempts").notNull().default(0),
