@@ -35,7 +35,7 @@ export async function incrementJobAttempts(jobId: string) {
     .where(eq(jobs.id, jobId))
     .returning();
 
-  return jobUpdated.attempts ?? null;
+  return jobUpdated?.attempts ?? null;
 }
 
 // ===========================================
@@ -58,12 +58,13 @@ export async function listJobs(status?: JobStatus, limit?: number) {
         id: jobs.id,
         eventId: jobs.eventId,
         statusText: sql<string>`
-    CASE 
-      WHEN ${jobs.status} = 0 THEN 'PENDING'
-      WHEN ${jobs.status} = 1 THEN 'PROCESSING'
-      WHEN ${jobs.status} = 2 THEN 'COMPLETED'
-      WHEN ${jobs.status} = 3 THEN 'FAILED'
-      WHEN ${jobs.status} = 4 THEN 'RETRYING'
+      CASE 
+      WHEN ${jobs.status} = ${JobStatus.PENDING} THEN 'PENDING'
+      WHEN ${jobs.status} = ${JobStatus.PROCESSING} THEN 'PROCESSING'
+      WHEN ${jobs.status} = ${JobStatus.COMPLETED} THEN 'COMPLETED'
+      WHEN ${jobs.status} = ${JobStatus.FAILED} THEN 'FAILED'
+      WHEN ${jobs.status} = ${JobStatus.RETRYING} THEN 'RETRYING'
+      WHEN ${jobs.status} = ${JobStatus.SKIPPED} THEN 'SKIPPED'
       ELSE 'unknown'
     END
   `,
@@ -84,12 +85,13 @@ export async function listJobs(status?: JobStatus, limit?: number) {
       id: jobs.id,
       eventId: jobs.eventId,
       statusText: sql<string>`
-    CASE 
-      WHEN ${jobs.status} = 0 THEN 'PENDING'
-      WHEN ${jobs.status} = 1 THEN 'PROCESSING'
-      WHEN ${jobs.status} = 2 THEN 'COMPLETED'
-      WHEN ${jobs.status} = 3 THEN 'FAILED'
-      WHEN ${jobs.status} = 4 THEN 'RETRYING'
+     CASE 
+      WHEN ${jobs.status} = ${JobStatus.PENDING} THEN 'PENDING'
+      WHEN ${jobs.status} = ${JobStatus.PROCESSING} THEN 'PROCESSING'
+      WHEN ${jobs.status} = ${JobStatus.COMPLETED} THEN 'COMPLETED'
+      WHEN ${jobs.status} = ${JobStatus.FAILED} THEN 'FAILED'
+      WHEN ${jobs.status} = ${JobStatus.RETRYING} THEN 'RETRYING'
+      WHEN ${jobs.status} = ${JobStatus.SKIPPED} THEN 'SKIPPED'
       ELSE 'unknown'
     END
   `,
@@ -112,11 +114,12 @@ export async function getJobById(jobId: string) {
       eventId: jobs.eventId,
       statusText: sql<string>`
     CASE 
-      WHEN ${jobs.status} = 0 THEN 'PENDING'
-      WHEN ${jobs.status} = 1 THEN 'PROCESSING'
-      WHEN ${jobs.status} = 2 THEN 'COMPLETED'
-      WHEN ${jobs.status} = 3 THEN 'FAILED'
-      WHEN ${jobs.status} = 4 THEN 'RETRYING'
+      WHEN ${jobs.status} = ${JobStatus.PENDING} THEN 'PENDING'
+      WHEN ${jobs.status} = ${JobStatus.PROCESSING} THEN 'PROCESSING'
+      WHEN ${jobs.status} = ${JobStatus.COMPLETED} THEN 'COMPLETED'
+      WHEN ${jobs.status} = ${JobStatus.FAILED} THEN 'FAILED'
+      WHEN ${jobs.status} = ${JobStatus.RETRYING} THEN 'RETRYING'
+      WHEN ${jobs.status} = ${JobStatus.SKIPPED} THEN 'SKIPPED'
       ELSE 'unknown'
     END
   `,
