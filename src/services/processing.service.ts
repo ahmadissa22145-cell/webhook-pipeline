@@ -1,5 +1,6 @@
 import { ProcessingActionType } from "../types/processingAction.type.js";
 import { highValueAlertPipelineAction } from "./pipelineActions/highValueAlert.pipelineActions.js";
+import { postNotificationPipelineAction } from "./pipelineActions/postNotification.pipelineAction.js";
 
 //in progress
 export async function processPayloadService(
@@ -14,8 +15,11 @@ export async function processPayloadService(
     }
   }
 
-  if (processingAction & ProcessingActionType.TRANSFORM) {
-    // logic
+  if (processingAction & ProcessingActionType.PostNotification) {
+    result = postNotificationPipelineAction(payload);
+    if (result === null) {
+      return null;
+    }
   }
 
   if (processingAction & ProcessingActionType.ENRICH) {
