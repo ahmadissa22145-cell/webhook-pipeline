@@ -6,6 +6,9 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
+    restart: always
+    volumes:
+      - redis_data:/data
 
   app:
     build: .
@@ -14,6 +17,12 @@ services:
       - "3000:3000"
     depends_on:
       - redis
+    restart: always
+    env_file:
+      - .env
     environment:
       - REDIS_HOST=redis
     command: node dist/main.js
+
+volumes:
+  redis_data:
