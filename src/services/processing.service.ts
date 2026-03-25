@@ -1,6 +1,7 @@
 import { ProcessingActionType } from "../types/processingAction.type.js";
 import { highValueAlertPipelineAction } from "./pipelineActions/highValueAlert.pipelineActions.js";
 import { postNotificationPipelineAction } from "./pipelineActions/postNotification.pipelineAction.js";
+import { sanitizePipelineAction } from "./pipelineActions/sanitizePipeline.Action.js";
 
 //in progress
 export async function processPayloadService(
@@ -22,8 +23,11 @@ export async function processPayloadService(
     }
   }
 
-  if (processingAction & ProcessingActionType.ENRICH) {
-    //logic
+  if (processingAction & ProcessingActionType.SANITIZE) {
+    result = sanitizePipelineAction(payload);
+    if (result === null) {
+      return null;
+    }
   }
 
   return result;
