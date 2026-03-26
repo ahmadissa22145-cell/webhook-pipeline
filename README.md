@@ -55,6 +55,7 @@ receiving the payload, storing it, processing it asynchronously, and delivering 
 Stores the main pipeline configuration.
 
 **Fields**
+
 - `id`
 - `name`
 - `processing_action_type`
@@ -63,9 +64,11 @@ Stores the main pipeline configuration.
 - `deleted_at`
 
 **Purpose**
+
 - Represents the main processing pipeline
 - Determines which processing action will be applied
-- 
+-
+
 ---
 
 #### 2. `sources`
@@ -73,6 +76,7 @@ Stores the main pipeline configuration.
 Represents the webhook source attached to a pipeline.
 
 **Fields**
+
 - `id`
 - `pipeline_id`
 - `token`
@@ -82,6 +86,7 @@ Represents the webhook source attached to a pipeline.
 - `deleted_at`
 
 **Purpose**
+
 - Holds the unique webhook token used to receive requests
 - Allows enabling/disabling the webhook source
 - Is separated from `pipelines` to support future expansion such as multiple sources per pipeline
@@ -93,11 +98,13 @@ Represents the webhook source attached to a pipeline.
 Stores every incoming webhook payload before processing.
 
 **Common responsibility**
+
 - Keeps the raw payload received from the external system
 - Links the incoming request to the pipeline that received it
 - Serves as the source record for later job processing
 
 **Purpose**
+
 - Preserves original webhook data
 - Makes the system auditable and debuggable
 - Ensures processing can happen asynchronously after the request is accepted
@@ -109,6 +116,7 @@ Stores every incoming webhook payload before processing.
 Tracks asynchronous processing work.
 
 **Known fields**
+
 - `id`
 - `event_id`
 - `status`
@@ -116,6 +124,7 @@ Tracks asynchronous processing work.
 - timestamps
 
 **Purpose**
+
 - Represents a processing task in the queue
 - Tracks whether the task is pending, processing, retrying, completed, or failed
 - Stores retry attempts for background worker execution
@@ -127,6 +136,7 @@ Tracks asynchronous processing work.
 Stores subscriber endpoints that will receive processed results.
 
 **Fields**
+
 - `id`
 - `url`
 - `created_at`
@@ -134,6 +144,7 @@ Stores subscriber endpoints that will receive processed results.
 - `deleted_at`
 
 **Purpose**
+
 - Represents an external destination endpoint
 - Can be linked to one or more pipelines
 - Uses soft delete instead of hard delete
@@ -145,6 +156,7 @@ Stores subscriber endpoints that will receive processed results.
 Join table between pipelines and subscribers.
 
 **Known fields**
+
 - `id`
 - `pipeline_id`
 - `subscriber_id`
@@ -152,6 +164,7 @@ Join table between pipelines and subscribers.
 - `unsubscribed_at`
 
 **Purpose**
+
 - Supports the many-to-many relationship between pipelines and subscribers
 - Allows a subscriber to subscribe to multiple pipelines
 - Allows a pipeline to have multiple subscribers
@@ -164,11 +177,13 @@ Join table between pipelines and subscribers.
 Tracks delivery attempts for each subscriber separately.
 
 **Known responsibility**
+
 - Stores the delivery status for each subscriber
 - Tracks retry attempts
 - Can store delivery response information for inspection
 
 **Purpose**
+
 - Makes delivery failures observable
 - Allows retries without losing history
 - Improves debugging and reliability
@@ -184,18 +199,22 @@ The database includes triggers to automate important behaviors and keep related 
 When a new pipeline is inserted, a source is created automatically for it.
 
 #### Trigger
+
 - `after_pipeline_insert`
 
 #### Function
+
 - `create_source_after_pipeline()`
 
 #### Behavior
+
 - Runs **AFTER INSERT** on `pipelines`
 - Automatically inserts a new row into `sources`
 - The inserted source is linked using:
   - `pipeline_id = NEW.id`
 
 #### Why this exists
+
 - Ensures every pipeline immediately has a source
 - Prevents missing webhook source records
 - Reduces manual setup logic in the application layer
@@ -207,12 +226,15 @@ When a new pipeline is inserted, a source is created automatically for it.
 When a subscriber is deleted, it is not physically removed from the database.
 
 #### Trigger
+
 - `before_delete_subscriber`
 
 #### Function
+
 - `soft_delete_subscriber()`
 
 #### Behavior
+
 - Runs **BEFORE DELETE** on `subscribers`
 - Updates the subscriber row:
   - sets `deleted_at = NOW()`
@@ -221,6 +243,7 @@ When a subscriber is deleted, it is not physically removed from the database.
 - Cancels the physical delete by returning `NULL`
 
 #### Why this exists
+
 - Preserves subscriber history
 - Prevents losing linked subscription data
 - Keeps the system auditable
@@ -233,12 +256,15 @@ When a subscriber is deleted, it is not physically removed from the database.
 When a pipeline is deleted, it is also soft deleted instead of being physically removed.
 
 #### Trigger
+
 - `before_delete_pipeline`
 
 #### Function
+
 - `soft_delete_pipeline()`
 
 #### Behavior
+
 - Runs **BEFORE DELETE** on `pipelines`
 - Updates the pipeline row:
   - sets `deleted_at = NOW()`
@@ -250,6 +276,7 @@ When a pipeline is deleted, it is also soft deleted instead of being physically 
 - Cancels the physical delete by returning `NULL`
 
 #### Why this exists
+
 - Preserves pipeline history
 - Automatically deactivates its webhook source
 - Automatically closes all active subscriptions linked to that pipeline
@@ -343,6 +370,7 @@ This approach makes it easy to:
 Used for transaction-like payloads.
 
 **Features**
+
 - detects high-value transactions
 - classifies severity levels
 - generates alert messages
@@ -355,6 +383,7 @@ Used for transaction-like payloads.
 Used for post-style payloads.
 
 **Features**
+
 - validates required fields
 - builds a readable message
 - adds audit information
@@ -366,6 +395,7 @@ Used for post-style payloads.
 Used for sensitive payloads that may contain private user information.
 
 **Features**
+
 - masks card numbers
 - masks emails
 - can normalize strings
@@ -395,3 +425,4 @@ Examples of future improvements:
 
 ```bash
 docker compose up --build
+```
