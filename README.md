@@ -67,9 +67,7 @@ Stores the main pipeline configuration.
 
 - Represents the main processing pipeline
 - Determines which processing action will be applied
--
-
----
+- ***
 
 #### 2. `sources`
 
