@@ -64,6 +64,13 @@
       "when": 1774453744987,
       "tag": "0008_motionless_luckman",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1774973211489,
+      "tag": "0009_pipeline-subscriber_soft_delete",
+      "breakpoints": true
     }
   ]
 }
