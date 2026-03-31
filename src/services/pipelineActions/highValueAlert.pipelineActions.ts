@@ -1,5 +1,18 @@
 import { isAlertPayload, AlertPayload } from "../../types/AlertPayload.type.js";
 
+/**
+ * Processes high-value transaction alerts
+ *
+ * Why:
+ * - Identify transactions that exceed defined thresholds
+ * - Classify transactions into severity levels (low → critical)
+ * - Generate alert messages for monitoring and notification systems
+ *
+ * Note:
+ * - Returns null if payload does not match expected structure
+ * - Designed to be used as part of a pipeline processing system
+ */
+
 export function highValueAlertPipelineAction(payload: unknown) {
   if (!isAlertPayload(payload)) {
     return null;
@@ -24,9 +37,9 @@ export function highValueAlertPipelineAction(payload: unknown) {
     : `Transaction processed — $${p.amount} (${level})`;
 
   return {
-    alert: isAlert,
-    level,
-    alertMessage,
+    alert: isAlert, // Indicates whether this should trigger an alert
+    level, // Severity classification
+    alertMessage, // Human-readable message
     audit: {
       processedAt: new Date(),
       reason: isAlert ? "High value transaction detected" : "Normal processing",

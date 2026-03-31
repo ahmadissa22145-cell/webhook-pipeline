@@ -3,6 +3,18 @@ type SanitizePayload = {
   email?: string;
 };
 
+/**
+ * Sanitizes sensitive fields from payload
+ *
+ * Why:
+ * - Protect sensitive information (card number, email)
+ * - Prevent leaking personal data downstream
+ * - Ensure safe data handling within the pipeline
+ *
+ * Note:
+ * - Returns null if payload is invalid or contains no relevant fields
+ */
+
 export function sanitizePipelineAction(payload: unknown) {
   if (!payload || typeof payload !== "object") return null;
 
