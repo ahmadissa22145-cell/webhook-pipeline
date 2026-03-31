@@ -95,14 +95,21 @@ export async function updateDeliveryStatusService(
   }
 
   // Enforce valid transition rules
-  if (status === DeliveryStatus.DELIVERED && delivery.status === DeliveryStatus.PENDING) {
+  if (
+    status === DeliveryStatus.DELIVERED &&
+    delivery.status === DeliveryStatus.PENDING
+  ) {
     throw new ConflictError(
       "Only sending or retrying deliveries can be marked as delivered",
     );
   }
 
   // Update delivery status in database
-  const updatedDelivery = await updateDeliveryStatus(trimmedId, status, responseCode);
+  const updatedDelivery = await updateDeliveryStatus(
+    trimmedId,
+    status,
+    responseCode,
+  );
 
   // Defensive check (unexpected DB failure)
   if (!updatedDelivery) {
