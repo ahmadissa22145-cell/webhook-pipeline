@@ -69,6 +69,7 @@ export async function createDeliveryService(
  * Why:
  * - Enforce valid state transitions
  * - Prevent updates on finalized deliveries (DELIVERED / FAILED)
+ * - Avoid redundant or invalid status changes
  */
 export async function updateDeliveryStatusService(
   deliveryId: string,
@@ -88,11 +89,23 @@ export async function updateDeliveryStatusService(
     throw new ConflictError(`${delivery.status} delivery cannot be updated`);
   }
 
+  // Prevent setting the same status again
+  if (delivery.status === status) {
+    throw new ConflictError("Delivery is already in the requested status");
+  }
+
+  // Enforce valid transition rules
+  if (status === DeliveryStatus.DELIVERED && delivery.status === DeliveryStatus.PENDING) {
+    throw new ConflictError(
+      "Only sending or retrying deliveries can be marked as delivered",
+    );
+  }
+
   // Update delivery status in database
-  const updated = await updateDeliveryStatus(trimmedId, status, responseCode);
+  const updatedDelivery = await updateDeliveryStatus(trimmedId, status, responseCode);
 
   // Defensive check (unexpected DB failure)
-  if (!updated) {
+  if (!updatedDelivery) {
     throw new InternalServerError("Failed to update delivery");
   }
 
@@ -111,15 +124,18 @@ export async function updateDeliveryStatusService(
 export async function incrementDeliveryAttemptsService(deliveryId: string) {
   const trimmedId = trimOrThrow(deliveryId, "Delivery id");
 
+  // Ensure Delivery exists before updating attempts
+  await getDeliveryByIdService(trimmedId);
+
   // Increment attempts count in database
-  const updated = await incrementDeliveryAttempts(trimmedId);
+  const updatedDelivery = await incrementDeliveryAttempts(trimmedId);
 
   // Defensive check (unexpected DB failure)
-  if (!updated) {
+  if (!updatedDelivery) {
     throw new InternalServerError("Failed to increment attempts");
   }
 
-  return updated.attempts;
+  return updatedDelivery.attempts;
 }
 
 // ================== READ ===================
