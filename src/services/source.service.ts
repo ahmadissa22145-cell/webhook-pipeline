@@ -11,81 +11,102 @@ import {
   NotFoundError,
   BadRequestError,
   ConflictError,
+  InternalServerError,
 } from "../errors/index.js";
+
 import { getPipelineByIdService } from "./pipeline.service.js";
+import { trimOrThrow } from "../utils/validation.js";
 
 // ================== CREATE ===================
+
+/**
+ * Creates a source for a pipeline
+ *
+ * Why:
+ * - Ensure pipeline exists
+ * - Prevent multiple active sources for the same pipeline
+ * - Maintain one-to-one relationship between pipeline and source
+ *
+ * Note:
+ * - This function allows creating a new source if the previous one was soft-deleted
+ * - This ensures the pipeline can always be re-linked to a new active source
+ */
 export async function createSourceService(pipelineId: string) {
-  if (!pipelineId) {
-    throw new BadRequestError("Pipeline id is required");
-  }
+  const trimmedPipelineId = trimOrThrow(pipelineId, "Pipeline id");
 
-  const pipeline = await getPipelineByIdService(pipelineId);
+  // Ensure pipeline exists
+  const pipeline = await getPipelineByIdService(trimmedPipelineId);
 
-  if (!pipeline) {
-    throw new NotFoundError(`Pipeline with id '${pipelineId}' not found`);
-  }
-
+  // Prevent duplicate active source
   if (pipeline.sourceId) {
     throw new ConflictError(
-      `Pipeline with id '${pipelineId}' already has an active source`,
+      `Pipeline with id '${trimmedPipelineId}' already has an active source`,
     );
   }
 
-  return await createSource(pipelineId);
+  // Create source
+  const source = await createSource(trimmedPipelineId);
+
+  // Defensive check
+  if (!source) {
+    throw new InternalServerError("Failed to create source");
+  }
+
+  return source;
 }
 
 // ================== UPDATE ===================
 
+/**
+ * Updates source active status
+ *
+ * Why:
+ * - Ensure valid input
+ * - Prevent redundant updates
+ */
 export async function updateSourceStatusService(id: string, isActive: boolean) {
-  if (!id) {
-    throw new BadRequestError("Source id is required");
-  }
+  const trimmedId = trimOrThrow(id, "Source id");
 
   if (typeof isActive !== "boolean") {
     throw new BadRequestError("isActive must be true or false");
   }
 
-  const source = await getSourceByIdService(id);
+  // Ensure source exists
+  const source = await getSourceByIdService(trimmedId);
 
+  // Prevent redundant update
   if (source.isActive === isActive) {
-    throw new BadRequestError(
+    throw new ConflictError(
       `Source is already ${isActive ? "active" : "inactive"}`,
     );
   }
 
-  const updated = await updateSourceStatus(id, isActive);
+  const updated = await updateSourceStatus(trimmedId, isActive);
 
+  // Defensive check
   if (!updated) {
-    throw new BadRequestError("Failed to update source");
+    throw new InternalServerError("Failed to update source");
   }
 
-  return updated;
+  return true;
 }
 
 // ================== READ ===================
 
+/**
+ * Retrieves a source by ID
+ *
+ * Why:
+ * - Ensure valid input
+ * - Provide clear error if not found
+ */
 export async function getSourceByIdService(id: string) {
-  if (!id) {
-    throw new BadRequestError("Source id is required");
-  }
+  const trimmedId = trimOrThrow(id, "Source id");
 
-  const source = await getSourceById(id);
-
-  if (!source) throw new NotFoundError(`Source with id '${id}' not found`);
-
-  return source;
-}
-
-// ===========================================
-
-export async function getSourceByTokenService(token: string) {
-  if (!token) throw new BadRequestError("Source token is required");
-
-  const source = await getSourceByToken(token);
+  const source = await getSourceById(trimmedId);
 
   if (!source) {
-    throw new NotFoundError(`Source with token '${token}' not found`);
+    throw new NotFoundError(`Source with id '${trimmedId}' not found`);
   }
 
   return source;
@@ -93,27 +114,67 @@ export async function getSourceByTokenService(token: string) {
 
 // ===========================================
 
+/**
+ * Retrieves a source by token
+ *
+ * Why:
+ * - Ensure valid input
+ * - Support token-based lookup
+ */
+export async function getSourceByTokenService(token: string) {
+  const trimmedToken = trimOrThrow(token, "Source token");
+
+  const source = await getSourceByToken(trimmedToken);
+
+  if (!source) {
+    throw new NotFoundError(`Source with token '${trimmedToken}' not found`);
+  }
+
+  return source;
+}
+
+// ===========================================
+
+/**
+ * Lists all sources
+ */
 export async function listSourcesService() {
-  return await listSources();
+  return listSources();
 }
 
 // ================== DELETE ===================
+
+/**
+ * Deletes a source
+ *
+ * Why:
+ * - Prevent deleting active sources
+ * - Ensure source exists before deletion
+ *
+ * Note:
+ * - Deletion is handled as a soft delete
+ * - A database BEFORE DELETE trigger is responsible for:
+ *   - Marking the source as deleted (e.g., setting deletedAt)
+ *   - Cleaning up relations with pipelines
+ * - This protects data from accidental loss and preserves history
+ */
 export async function deleteSourceService(id: string) {
-  if (!id) {
-    throw new BadRequestError("Source id is required");
-  }
+  const trimmedId = trimOrThrow(id, "Source id");
 
-  const source = await getSourceByIdService(id);
+  // Ensure source exists
+  const source = await getSourceByIdService(trimmedId);
 
+  // Prevent deleting active source
   if (source.isActive) {
     throw new ConflictError("Cannot delete active source");
   }
 
-  const deleted = await deleteSource(id);
+  const deleted = await deleteSource(trimmedId);
 
+  // Defensive check
   if (!deleted) {
-    throw new NotFoundError(`Source with id '${id}' not found`);
+    throw new InternalServerError("Failed to delete source");
   }
 
-  return deleted;
+  return true;
 }
