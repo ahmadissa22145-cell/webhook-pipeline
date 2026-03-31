@@ -253,11 +253,7 @@ export async function unsubscribeByIdService(id: string) {
   // Ensure subscription exists
   await getSubscriptionByIdService(trimmedId);
 
-  const updated = await unsubscribeByID(trimmedId);
-
-  if (!updated) {
-    throw new InternalServerError("Failed to unsubscribe");
-  }
+  await unsubscribeByID(trimmedId);
 
   return true;
 }

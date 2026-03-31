@@ -168,15 +168,12 @@ export async function unsubscribe(pipelineId: string, subscriberId: string) {
 // =========================================
 
 export async function unsubscribeByID(id: string) {
-  const [updated] = await db
+  return await db
     .delete(pipelineSubscribers)
     .where(
       and(
         eq(pipelineSubscribers.id, id),
         isNull(pipelineSubscribers.unsubscribedAt),
       ),
-    )
-    .returning();
-
-  return updated ?? null;
+    );
 }
