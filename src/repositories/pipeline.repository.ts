@@ -53,7 +53,7 @@ export async function updatePipeline(
 
 // ================== READ ===================
 
-export async function getAllPipelines() {
+export async function getAllPipelines(limit: number) {
   const storedPipelines = await db
     .select({
       id: pipelines.id,
@@ -72,7 +72,8 @@ export async function getAllPipelines() {
       sources,
       and(eq(pipelines.id, sources.pipelineId), isNull(sources.deletedAt)),
     )
-    .where(isNull(pipelines.deletedAt));
+    .where(isNull(pipelines.deletedAt))
+    .limit(limit);
   return storedPipelines;
 }
 

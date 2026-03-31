@@ -89,7 +89,11 @@ export async function getAllPipelinesController(
   next: NextFunction,
 ) {
   try {
-    const storedPipelines = await getAllPipelinesService();
+    const { limit } = req.query as { limit?: string };
+
+    const parsedLimit = limit ? Number(limit) : undefined;
+
+    const storedPipelines = await getAllPipelinesService(parsedLimit);
 
     const message =
       storedPipelines.length === 0

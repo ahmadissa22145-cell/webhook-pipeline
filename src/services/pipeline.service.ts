@@ -128,8 +128,11 @@ export async function updatePipelineService(
 /**
  * Retrieves all pipelines.
  */
-export async function getAllPipelinesService() {
-  return await getAllPipelines();
+export async function getAllPipelinesService(limit?: number) {
+  if (limit !== undefined && limit <= 0) {
+    throw new BadRequestError("Limit must be a positive number");
+  }
+  return await getAllPipelines(limit ?? 10);
 }
 
 /**
