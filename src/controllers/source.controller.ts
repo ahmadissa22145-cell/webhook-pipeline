@@ -8,6 +8,7 @@ import {
   updateSourceStatusService,
 } from "../services/source.service.js";
 import { BadRequestError } from "../errors/BadRequestError.js";
+import { trimOrThrow } from "../utils/validation.js";
 
 // ================== CREATE ===================
 
@@ -21,11 +22,9 @@ export async function createSourceController(
       pipelineId: string;
     };
 
-    if (!pipelineId?.trim()) {
-      throw new BadRequestError("pipelineId are required");
-    }
-
-    const source = await createSourceService(pipelineId.trim());
+    const source = await createSourceService(
+      trimOrThrow(pipelineId, "Pipeline id"),
+    );
 
     res.status(201).json({
       data: source,
@@ -45,17 +44,14 @@ export async function updateSourceStatusController(
     const { id } = req.params as { id: string };
     const { isActive } = req.body as { isActive: boolean };
 
-    const trimmedId = id?.trim();
-
-    if (!trimmedId) {
-      throw new BadRequestError("Source id is required");
-    }
-
     if (typeof isActive !== "boolean") {
       throw new BadRequestError("isActive must be true or false");
     }
 
-    const source = await updateSourceStatusService(trimmedId, isActive);
+    const source = await updateSourceStatusService(
+      trimOrThrow(id, "Source id"),
+      isActive,
+    );
 
     res.status(200).json({
       data: source,
@@ -75,11 +71,7 @@ export async function getSourceByIdController(
   try {
     const { id } = req.params as { id: string };
 
-    const timmedId = id?.trim();
-
-    if (!timmedId) throw new BadRequestError("Source id is required");
-
-    const source = await getSourceByIdService(timmedId);
+    const source = await getSourceByIdService(trimOrThrow(id, "Source id"));
 
     res.status(200).json({
       data: source,
@@ -99,11 +91,9 @@ export async function getSourceByTokenController(
   try {
     const { token } = req.params as { token: string };
 
-    const trimmedToken = token?.trim();
-
-    if (!trimmedToken) throw new BadRequestError("Source token is required");
-
-    const source = await getSourceByTokenService(trimmedToken);
+    const source = await getSourceByTokenService(
+      trimOrThrow(token, "Source token"),
+    );
 
     res.status(200).json({
       data: source,
@@ -140,13 +130,7 @@ export async function deleteSourceController(
   try {
     const { id } = req.params as { id: string };
 
-    const trimmedId = id?.trim();
-
-    if (!trimmedId) {
-      throw new BadRequestError("Source id is required");
-    }
-
-    await deleteSourceService(trimmedId);
+    await deleteSourceService(trimOrThrow(id, "Source id"));
 
     res.status(204).send();
   } catch (error) {

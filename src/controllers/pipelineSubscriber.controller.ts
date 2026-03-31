@@ -8,7 +8,6 @@ import {
   unsubscribeByIdService,
   unsubscribeService,
 } from "../services/pipelineSubscriber.service.js";
-import { BadRequestError } from "../errors/BadRequestError.js";
 import { trimOrThrow } from "../utils/validation.js";
 
 // ================== CREATE ===================
@@ -24,16 +23,9 @@ export async function subscribeController(
       subscriberId: string;
     };
 
-    const trimmedPipelineId = pipelineId?.trim();
-    const trimmedSubscriberId = subscriberId?.trim();
-
-    if (!trimmedPipelineId || !trimmedSubscriberId) {
-      throw new BadRequestError("Pipeline ID and Subscriber ID are required");
-    }
-
     const subscription = await subscribeService(
-      trimmedPipelineId,
-      trimmedSubscriberId,
+      trimOrThrow(pipelineId, "Pipeline id"),
+      trimOrThrow(subscriberId, "Subscriber id"),
     );
 
     res.status(201).json({
@@ -74,12 +66,9 @@ export async function getSubscriptionByIdController(
   try {
     const { id } = req.params as { id: string };
 
-    const trimmedId = id?.trim();
-
-    if (!trimmedId) {
-      throw new BadRequestError("Subscription ID is required");
-    }
-    const subscription = await getSubscriptionByIdService(trimmedId);
+    const subscription = await getSubscriptionByIdService(
+      trimOrThrow(id, "Subscription id"),
+    );
 
     res.status(200).json({
       data: subscription,
@@ -101,18 +90,9 @@ export async function getSubscriptionByNameAndUrlController(
       subscriberUrl: string;
     };
 
-    const trimmedName = pipelineName?.trim();
-    const trimmedUrl = subscriberUrl?.trim();
-
-    if (!trimmedName || !trimmedUrl) {
-      throw new BadRequestError(
-        "Pipeline name and subscriber URL are required",
-      );
-    }
-
     const subscription = await getSubscriptionByNameAndUrlService(
-      trimmedName,
-      trimmedUrl,
+      trimOrThrow(pipelineName, "Pipeline name"),
+      trimOrThrow(subscriberUrl, "Subscriber url"),
     );
 
     res.status(200).json({
@@ -132,7 +112,7 @@ export async function getPipelinesBySubscriberIdController(
     const { subscriberId } = req.params as { subscriberId: string };
 
     const pipelines = await getPipelinesBySubscriberIdService(
-      trimOrThrow(subscriberId),
+      trimOrThrow(subscriberId, "Subscriber id"),
     );
 
     res.status(200).json({
@@ -155,14 +135,10 @@ export async function unsubscribeController(
       subscriberId: string;
     };
 
-    const trimmedPipelineId = pipelineId?.trim();
-    const trimmedSubscriberId = subscriberId?.trim();
-
-    if (!trimmedPipelineId || !trimmedSubscriberId) {
-      throw new BadRequestError("Pipeline ID and Subscriber ID are required");
-    }
-
-    await unsubscribeService(trimmedPipelineId, trimmedSubscriberId);
+    await unsubscribeService(
+      trimOrThrow(pipelineId, "Pipeline id"),
+      trimOrThrow(subscriberId, "Subscriber id"),
+    );
 
     res.status(204).send(); // No Content
   } catch (error) {
@@ -180,13 +156,7 @@ export async function unsubscribeByIDController(
       id: string;
     };
 
-    const trimmedId = id?.trim();
-
-    if (!trimmedId) {
-      throw new BadRequestError("Subscription ID are required");
-    }
-
-    await unsubscribeByIdService(trimmedId);
+    await unsubscribeByIdService(trimOrThrow(id, "Subscription id"));
 
     res.status(204).send(); // No Content
   } catch (error) {

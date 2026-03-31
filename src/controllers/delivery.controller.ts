@@ -16,9 +16,9 @@ export async function getDeliveryByIdController(
   try {
     const { id } = req.params as { id: string };
 
-    const trimmedId = trimOrThrow(id);
-
-    const delivery = await getDeliveryByIdService(trimmedId);
+    const delivery = await getDeliveryByIdService(
+      trimOrThrow(id, "Delivery id"),
+    );
 
     res.status(200).json({ data: delivery });
   } catch (err) {
@@ -37,12 +37,14 @@ export async function listDeliveriesController(
     const { jobId, limit } = req.query as { jobId?: string; limit?: string };
 
     const parsedLimit = limit ? Number(limit) : undefined;
-    const parsedjobId = jobId?.trim();
 
     if (parsedLimit !== undefined && (isNaN(parsedLimit) || parsedLimit <= 0))
       throw new BadRequestError("Limit must be a positive number");
 
-    const deliveries = await listDeliveriesService(parsedjobId, parsedLimit);
+    const deliveries = await listDeliveriesService(
+      trimOrThrow(jobId, "Job Id"),
+      parsedLimit,
+    );
 
     res.status(200).json({ data: deliveries });
   } catch (err) {

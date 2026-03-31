@@ -10,9 +10,7 @@ export async function handleWebhookController(
   try {
     const { token } = req.params as { token: string };
 
-    const trimmedToken = trimOrThrow(token, "Pipeline token");
-
-    await handleWebhookService(trimmedToken, req.body);
+    await handleWebhookService(trimOrThrow(token, "Pipeline token"), req.body);
 
     res.status(202).json({
       message: "Webhook received",

@@ -10,6 +10,7 @@ import {
   deleteSubscriberService,
 } from "../services/subscriber.service.js";
 import { BadRequestError } from "../errors/BadRequestError.js";
+import { trimOrThrow } from "../utils/validation.js";
 
 // ================== CREATE ===================
 
@@ -21,11 +22,9 @@ export async function createSubscriberController(
   try {
     const { url } = req.body as { url: string };
 
-    const trimmedUrl = url?.trim();
-
-    if (!trimmedUrl) throw new BadRequestError("Subscriber Url is required");
-
-    const subscriber = await createSubscriberService(trimmedUrl);
+    const subscriber = await createSubscriberService(
+      trimOrThrow(url, "Subscriber url"),
+    );
 
     res.status(201).json({
       data: subscriber,
@@ -78,11 +77,9 @@ export async function getSubscriberByIdController(
   try {
     const { id } = req.params as { id: string };
 
-    const trimmedId = id?.trim();
-
-    if (!trimmedId) throw new BadRequestError("Subscriber id is required");
-
-    const subscriber = await getSubscriberByIdService(trimmedId);
+    const subscriber = await getSubscriberByIdService(
+      trimOrThrow(id, "Subscriber id"),
+    );
 
     res.status(200).json({
       data: subscriber,
@@ -102,13 +99,9 @@ export async function getSubscribersByPipelineIdController(
   try {
     const { pipelineId } = req.params as { pipelineId: string };
 
-    const trimmedPipelineId = pipelineId?.trim();
-
-    if (!trimmedPipelineId)
-      throw new BadRequestError("Pipeline id is required");
-
-    const subscribers =
-      await getSubscribersByPipelineIdService(trimmedPipelineId);
+    const subscribers = await getSubscribersByPipelineIdService(
+      trimOrThrow(pipelineId, "Pipeline id"),
+    );
 
     res.status(200).json({
       data: subscribers,
@@ -129,15 +122,10 @@ export async function updateSubscriberUrlController(
     const { id } = req.params as { id: string };
     const { url } = req.body as { url: string };
 
-    const trimmedId = id?.trim();
-
-    if (!trimmedId) throw new BadRequestError("Subscriber id is required");
-
-    const trimmedUrl = url?.trim();
-
-    if (!trimmedUrl) throw new BadRequestError("Subscriber Url is required");
-
-    const updated = await updateSubscriberUrlService(trimmedId, trimmedUrl);
+    const updated = await updateSubscriberUrlService(
+      trimOrThrow(id, "Subscriber id"),
+      trimOrThrow(url, "Subscriber url"),
+    );
 
     res.status(200).json({
       data: updated,
@@ -157,11 +145,7 @@ export async function deleteSubscriberController(
   try {
     const { id } = req.params as { id: string };
 
-    const trimmedId = id?.trim();
-
-    if (!trimmedId) throw new BadRequestError("Subscriber id is required");
-
-    await deleteSubscriberService(trimmedId);
+    await deleteSubscriberService(trimOrThrow(id, "Subscriber id"));
 
     res.status(204).send(); // No Content
   } catch (error) {

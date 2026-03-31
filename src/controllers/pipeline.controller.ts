@@ -35,13 +35,11 @@ export async function createPipelineController(
   try {
     const pipelineData: NewPipeline = createPipelineSchema.parse(req.body);
 
-    pipelineData.name = trimOrThrow(pipelineData.name, "Pipeline name");
-
     if (pipelineData.processingActionType === undefined)
       throw new BadRequestError("Processing action type is required");
 
     const pipeline = await createPipelineService(
-      pipelineData.name,
+      trimOrThrow(pipelineData.name, "Pipeline name"),
       pipelineData.processingActionType,
     );
 

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { listJobsService, getJobByIdService } from "../services/job.service.js";
 import { BadRequestError } from "../errors/index.js";
 import { JobStatus } from "../types/jobStatus.type.js";
+import { trimOrThrow } from "../utils/validation.js";
 
 // ================== READ ===================
 
@@ -50,7 +51,7 @@ export async function getJobByIdController(
   try {
     const { id } = req.params as { id: string };
 
-    const job = await getJobByIdService(id);
+    const job = await getJobByIdService(trimOrThrow(id, "Job id"));
 
     res.status(200).json({
       data: job,
