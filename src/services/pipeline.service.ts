@@ -22,12 +22,24 @@ import { trimOrThrow } from "../utils/validation.js";
 // ================== CREATE ==================
 
 /**
- * Creates a pipeline
+ * Deletes a pipeline.
  *
  * Why:
- * - Ensure required processing action type is provided
- * - Prevent duplicate pipelines by name
- * - Maintain data integrity before insertion
+ * - Reuse the same deletion logic for different identifiers (id / name)
+ * - Avoid duplicating validation and business rules
+ * - Ensure pipeline exists and is not already deleted
+ *
+ * Design:
+ * - Uses injected functions (strategy pattern) to support multiple deletion methods
+ *
+ * Note:
+ * - Deletion is handled as a soft delete
+ * - A database BEFORE DELETE trigger is responsible for:
+ *   - Marking the pipeline as deleted (e.g., setting deletedAt)
+ *   - Soft-deleting the related source
+ *   - Soft-deleting all related subscriptions and relationships
+ * - This ensures data consistency and protects records from accidental data loss
+ * - All cascading logic is centralized at the database level
  */
 export async function createPipelineService(
   name: string,
