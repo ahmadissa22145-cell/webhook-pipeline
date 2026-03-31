@@ -8,21 +8,31 @@ import {
   deleteSubscriber,
 } from "../repositories/subscriber.repository.js";
 
-import { BadRequestError } from "../errors/BadRequestError.js";
-import { NotFoundError } from "../errors/NotFoundError.js";
-import { ConflictError } from "../errors/ConflictError.js";
-import { InternalServerError } from "../errors/InternalServerError.js";
+import {
+  BadRequestError,
+  NotFoundError,
+  ConflictError,
+  InternalServerError,
+} from "../errors/index.js";
+
 import { getPipelineByIdService } from "./pipeline.service.js";
+import { trimOrThrow } from "../utils/validation.js";
 
 // ================== CREATE ===================
 
+/**
+ * Creates a subscriber
+ *
+ * Why:
+ * - Ensure valid URL format
+ * - Prevent duplicate subscribers by URL
+ * - Maintain data integrity
+ */
 export async function createSubscriberService(url: string) {
-  const trimmedUrl = url?.trim();
+  // Normalize and validate input
+  const trimmedUrl = trimOrThrow(url, "Subscriber url");
 
-  if (!trimmedUrl) {
-    throw new BadRequestError("Subscriber Url is required");
-  }
-  let validUrl;
+  let validUrl: string;
 
   try {
     validUrl = new URL(trimmedUrl).toString();
@@ -30,13 +40,16 @@ export async function createSubscriberService(url: string) {
     throw new BadRequestError("Invalid URL format");
   }
 
+  // Prevent duplicate subscriber
   const existing = await getSubscriberByUrl(validUrl);
   if (existing) {
     throw new ConflictError("Subscriber with this URL already exists");
   }
 
+  // Create subscriber
   const subscriber = await createSubscriber(validUrl);
 
+  // Defensive check
   if (!subscriber) {
     throw new InternalServerError("Failed to create subscriber");
   }
@@ -46,19 +59,28 @@ export async function createSubscriberService(url: string) {
 
 // ================== READ ===================
 
+/**
+ * Lists subscribers with optional pagination
+ */
 export async function listSubscribersService(limit?: number) {
   if (limit !== undefined && limit <= 0) {
     throw new BadRequestError("Limit must be a positive number");
   }
 
-  return await listSubscribers(limit ?? 10);
+  return listSubscribers(limit ?? 10);
 }
 
 // ===========================================
 
+/**
+ * Retrieves a subscriber by ID
+ *
+ * Why:
+ * - Ensure valid input
+ * - Provide clear error if not found
+ */
 export async function getSubscriberByIdService(id: string) {
-  const trimmedId = id?.trim();
-  if (!trimmedId) throw new BadRequestError("Subscriber ID is required");
+  const trimmedId = trimOrThrow(id, "Subscriber id");
 
   const subscriber = await getSubscriberById(trimmedId);
 
@@ -68,10 +90,18 @@ export async function getSubscriberByIdService(id: string) {
 
   return subscriber;
 }
+
 // ===========================================
+
+/**
+ * Retrieves a subscriber by URL
+ *
+ * Why:
+ * - Ensure valid input
+ * - Support URL-based lookup
+ */
 export async function getSubscriberByUrlService(url: string) {
-  const trimmedUrl = url?.trim();
-  if (!trimmedUrl) throw new BadRequestError("Subscriber url is required");
+  const trimmedUrl = trimOrThrow(url, "Subscriber url");
 
   const subscriber = await getSubscriberByUrl(trimmedUrl);
 
@@ -84,12 +114,17 @@ export async function getSubscriberByUrlService(url: string) {
 
 // ===========================================
 
+/**
+ * Retrieves subscribers associated with a pipeline
+ *
+ * Why:
+ * - Ensure pipeline exists
+ * - Provide relationship data
+ */
 export async function getSubscribersByPipelineIdService(pipelineId: string) {
-  const trimmedPipelineId = pipelineId?.trim();
-  if (!trimmedPipelineId) {
-    throw new BadRequestError("Pipeline ID is required");
-  }
+  const trimmedPipelineId = trimOrThrow(pipelineId, "Pipeline id");
 
+  // Ensure pipeline exists
   await getPipelineByIdService(trimmedPipelineId);
 
   const subscribers = await getSubscribersByPipelineId(trimmedPipelineId);
@@ -99,46 +134,76 @@ export async function getSubscribersByPipelineIdService(pipelineId: string) {
 
 // ================== UPDATE ===================
 
+/**
+ * Updates subscriber URL
+ *
+ * Why:
+ * - Ensure valid input
+ * - Prevent duplicate URLs
+ * - Prevent redundant updates
+ */
 export async function updateSubscriberUrlService(id: string, url: string) {
-  const trimmedId = id?.trim();
-  if (!trimmedId) throw new BadRequestError("Subscriber ID is required");
+  const trimmedId = trimOrThrow(id, "Subscriber id");
+  const trimmedUrl = trimOrThrow(url, "Subscriber url");
 
-  const trimmedUrl = url?.trim();
-  if (!trimmedUrl) {
-    throw new BadRequestError("URL is required");
+  let validUrl: string;
+
+  try {
+    validUrl = new URL(trimmedUrl).toString();
+  } catch {
+    throw new BadRequestError("Invalid URL format");
   }
 
+  // Ensure subscriber exists
   const subscriber = await getSubscriberByIdService(trimmedId);
 
-  if (subscriber.url === trimmedUrl) {
+  // Prevent same URL
+  if (subscriber.url === validUrl) {
     throw new ConflictError("URL is already the same");
   }
 
-  const existing = await getSubscriberByUrl(trimmedUrl);
+  // Prevent duplicate URL
+  const existing = await getSubscriberByUrl(validUrl);
   if (existing) {
     throw new ConflictError("Another subscriber with this URL already exists");
   }
 
-  const updated = await updateSubscriberUrl(trimmedId, trimmedUrl);
+  const updated = await updateSubscriberUrl(trimmedId, validUrl);
 
+  // Defensive check
   if (!updated) {
     throw new InternalServerError("Failed to update subscriber");
   }
 
-  return updated;
+  return true;
 }
 
 // ================== DELETE ===================
 
+/**
+ * Deletes a subscriber
+ *
+ * Why:
+ * - Ensure subscriber exists before deletion
+ *
+ * Note:
+ * - Deletion is implemented as a soft delete
+ * - A database BEFORE DELETE trigger is responsible for:
+ *   - Marking the subscriber as deleted (e.g., setting deletedAt)
+ *   - Soft-deleting all related subscriptions and pipeline relationships
+ * - This protects data from accidental loss and preserves historical records
+ * - All cascading logic is centralized at the database level
+ */
 export async function deleteSubscriberService(id: string) {
-  const trimmedId = id?.trim();
-  if (!trimmedId) throw new BadRequestError("Subscriber ID is required");
+  const trimmedId = trimOrThrow(id, "Subscriber id");
 
+  // Ensure subscriber exists
   await getSubscriberByIdService(trimmedId);
 
-  const isDeleted = await deleteSubscriber(trimmedId);
+  const deleted = await deleteSubscriber(trimmedId);
 
-  if (!isDeleted) {
+  // Defensive check
+  if (!deleted) {
     throw new InternalServerError("Failed to delete subscriber");
   }
 
