@@ -14,7 +14,7 @@ import {
   updateJobStatus,
 } from "../repositories/job.repository.js";
 import { getEventByIdService } from "./event.service.js";
-import { trimOrThrow } from "src/utils/validation.js";
+import { trimOrThrow } from "../utils/validation.js";
 
 // ================== CREATE ===================
 

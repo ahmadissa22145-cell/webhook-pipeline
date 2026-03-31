@@ -5,7 +5,7 @@ import {
   NotFoundError,
 } from "../errors/index.js";
 import { EventType } from "../types/event.type.js";
-import { trimOrThrow } from "src/utils/validation.js";
+import { trimOrThrow } from "../utils/validation.js";
 
 // ================== CREATE ===================
 /**
@@ -48,9 +48,9 @@ export async function getEventByIdService(id: string) {
   // Fetch event from database
   const event = await getEventById(trimmedId);
 
-  // Defensive check (unexpected DB failure)
+  // Handle missing job
   if (!event) {
-    throw new NotFoundError(`Event with id ${trimmedId} not found`);
+    throw new NotFoundError(`Event not found`);
   }
 
   return event;
