@@ -1,11 +1,6 @@
 import { ProcessingActionType } from "src/types/processingAction.type";
 import { db } from "../db/index.js";
-import {
-  NewPipeline,
-  Pipeline,
-  pipelines,
-  sources,
-} from "../db/schema/index.js";
+import { Pipeline, pipelines, sources } from "../db/schema/index.js";
 import { and, eq, isNotNull, isNull } from "drizzle-orm";
 
 type UpdatePipelineInput = {
@@ -15,12 +10,15 @@ type UpdatePipelineInput = {
 
 // ================== CREATE ==================
 
-export async function createPipeline(input: NewPipeline): Promise<Pipeline> {
+export async function createPipeline(
+  name: string,
+  processingAction: ProcessingActionType,
+): Promise<Pipeline> {
   const [pipeline] = await db
     .insert(pipelines)
     .values({
-      name: input.name,
-      processingActionType: input.processingActionType,
+      name: name,
+      processingActionType: processingAction,
     })
     .returning();
 

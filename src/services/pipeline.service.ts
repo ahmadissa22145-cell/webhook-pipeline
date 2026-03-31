@@ -9,7 +9,7 @@ import {
   isPipelineDeletedByName,
   updatePipeline,
 } from "../repositories/pipeline.repository.js";
-import { NewPipeline, Pipeline } from "../db/schema/index.js";
+import { Pipeline } from "../db/schema/index.js";
 import {
   BadRequestError,
   ConflictError,
@@ -29,12 +29,15 @@ import { trimOrThrow } from "../utils/validation.js";
  * - Prevent duplicate pipelines by name
  * - Maintain data integrity before insertion
  */
-export async function createPipelineService(input: NewPipeline) {
-  if (input.processingActionType === undefined) {
+export async function createPipelineService(
+  name: string,
+  processingAction: ProcessingActionType,
+) {
+  if (processingAction === undefined) {
     throw new BadRequestError("Processing action type is required");
   }
 
-  const trimmedName = trimOrThrow(input.name, "Pipeline name");
+  const trimmedName = trimOrThrow(name, "Pipeline name");
 
   // Prevent duplicate names
   const existing = await getPipelineByName(trimmedName);
@@ -44,9 +47,7 @@ export async function createPipelineService(input: NewPipeline) {
     );
   }
 
-  const pipeline = await createPipeline({
-    ...input,
-  });
+  const pipeline = await createPipeline(trimmedName, processingAction);
 
   // Defensive check
   if (!pipeline) {

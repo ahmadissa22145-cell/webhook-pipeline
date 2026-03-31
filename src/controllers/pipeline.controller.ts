@@ -40,7 +40,10 @@ export async function createPipelineController(
     if (pipelineData.processingActionType === undefined)
       throw new BadRequestError("Processing action type is required");
 
-    const pipeline = await createPipelineService(pipelineData);
+    const pipeline = await createPipelineService(
+      pipelineData.name,
+      pipelineData.processingActionType,
+    );
 
     return res.status(201).json({
       data: pipeline,
@@ -198,7 +201,6 @@ export async function deletePipelineController(
 
     await deletePipelineService(
       trimmedValue,
-      field,
       pipelineHandlers.fnGetPipeline,
       pipelineHandlers.fnDeletePipeline,
     );
